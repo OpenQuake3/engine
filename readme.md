@@ -16,6 +16,6 @@ _(eg: Adding support for separate crouch/jump inputs, enabling native font suppo
 The buildsystem of this project will:
 - Clone a clean copy oDFe's repository
 - Apply the list of patches
-- Reorganize the folder structure to simplify the build process
+- Reorganize the folder structure
 - Build oQ3
 

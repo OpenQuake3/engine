@@ -1,0 +1,10 @@
+# Ignore everything by default
+*
+!*/
+
+# Whitelist
+# └─ Files
+!.gitignore
+!build.nim
+# └─ Folders
+!patches/**
