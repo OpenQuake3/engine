@@ -1,0 +1,9 @@
+[submodule "src/lib/confy"]
+	path = src/lib/confy
+	url = git@github.com:heysokam/confy.git
+[submodule "src/lib/zstd"]
+	path = src/lib/zstd
+	url = git@github.com:heysokam/zstd.git
+[submodule "src/lib/idtech3"]
+	path = src/lib/idtech3
+	url = git@github.com:JBustos22/oDFe.git
