@@ -7,3 +7,6 @@
 [submodule "src/lib/idtech3"]
 	path = src/lib/idtech3
 	url = git@github.com:JBustos22/oDFe.git
+[submodule "src/lib/glfw"]
+	path = src/lib/glfw
+	url = git@github.com:glfw/glfw.git
