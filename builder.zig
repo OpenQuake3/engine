@@ -71,6 +71,12 @@ pub fn main () !u8 {
   // Initialize the confy builder
   var builder = try confy.init(); defer builder.term();
   P.report();
+
+  //______________________________________
+  // @section Build Dependencies
+  //____________________________
+  try glfw.build(&builder, alwaysClean);
+
   //______________________________________
   // @section Define Targets
   //____________________________
@@ -86,12 +92,20 @@ pub fn main () !u8 {
     .version = P.version,
     .flags   = idtech3.C.flags.lib,
     }, &builder);
+  //__________________
+  var engine = try confy.Program(.{
+    .trg     = P.name.short,
+    .entry   = dir.src++"/entry.zig",
+    .version = P.version,
+    .flags   = idtech3.flags,
+    }, &builder);
 
   //______________________________________
   // @section Build Targets
   //____________________________
   // try tests.build();
   try id3.build();
+  try engine.build();
   return 0;
 }
 
