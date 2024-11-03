@@ -12,9 +12,9 @@ const zstd  = @import("../lib/zstd.zig");
 //______________________________________
 // @section GLFW: Build Config
 //____________________________
-const dir = struct {
-  const src = "./src/lib/glfw";
-  const bin = glfw.dir.src++"/build";
+pub const dir = struct {
+  pub const src = "./src/lib/glfw";
+  pub const bin = glfw.dir.src++"/build";
 }; //:: build.glfw.dir
 //__________________
 pub const flags = .{
