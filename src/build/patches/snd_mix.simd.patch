@@ -1,0 +1,33 @@
+diff --git a/code/client/snd_mix.c b/code/client/snd_mix.c
+index ac9af157..cea41ee4 100644
+--- a/code/client/snd_mix.c
++++ b/code/client/snd_mix.c
+@@ -269,6 +269,10 @@ LExit:
+ void S_WriteLinearBlastStereo16_SSE_x64( int*, short*, int );
+ #endif
+ 
++#if !defined(USE_SIMD_SND)
++#define USE_SIMD_SND 1
++#endif
++
+ void S_TransferStereo16( unsigned long *pbuf, int endtime )
+ {
+ 	int		lpos;
+@@ -291,7 +295,7 @@ void S_TransferStereo16( unsigned long *pbuf, int endtime )
+ 		snd_linear_count <<= 1;
+ 
+ 		// write a linear blast of samples
+-#if id386 && defined (_MSC_VER)  && defined (USE_WIN32_ASM)
++#if USE_SIMD_SND && id386 && defined (_MSC_VER)  && defined (USE_WIN32_ASM)
+ 		if ( CPU_Flags & CPU_SSE )
+ 			S_WriteLinearBlastStereo16_SSE();
+ 		else
+@@ -299,7 +303,7 @@ void S_TransferStereo16( unsigned long *pbuf, int endtime )
+ 			S_WriteLinearBlastStereo16_MMX();
+ 		else
+ #endif
+-#if idx64 && (!defined (_MSC_VER) || defined (USE_WIN32_ASM))
++#if USE_SIMD_SND && idx64 && (!defined (_MSC_VER) || defined (USE_WIN32_ASM))
+ 		S_WriteLinearBlastStereo16_SSE_x64( snd_p, snd_out, snd_linear_count );
+ #else
+ 		S_WriteLinearBlastStereo16();

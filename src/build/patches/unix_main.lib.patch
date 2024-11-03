@@ -1,0 +1,17 @@
+diff --git a/code/unix/unix_main.c b/code/unix/unix_main.c
+index f21c224e..e7264e8b 100644
+--- a/code/unix/unix_main.c
++++ b/code/unix/unix_main.c
+@@ -975,6 +975,7 @@ static int Sys_ParseArgs( int argc, const char* argv[] )
+ }
+ 
+ 
++#if !defined (ID3_STATIC_LIBRARY)
+ int main( int argc, const char* argv[] )
+ {
+ 	char con_title[ MAX_CVAR_VALUE_STRING ];
+@@ -1073,3 +1074,4 @@ int main( int argc, const char* argv[] )
+ 	// never gets here
+ 	return 0;
+ }
++#endif
