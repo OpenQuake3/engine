@@ -17,10 +17,11 @@ pub const sys = struct {
   }; //:: id3.sys.input
 }; //:: id3.sys
 
-pub const tty = struct {
+pub const tty = tui;
+pub const tui = struct {
   pub const Status = C.tty.Status;
   pub const input = struct {
     pub const init = C.tty.input.init;
-  };
-}; //:: id3.tty
+  }; //:: id3.tui.input
+}; //:: id3.tui
 
