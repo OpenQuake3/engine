@@ -852,27 +852,27 @@ int main(int argc, const char* argv[]) {
   // get the initial time base
   /* Sys_Milliseconds(); */
 
-  Com_Init(cmdline);
-  NET_Init();
+  /* Com_Init(cmdline); */
+  /* NET_Init(); */
 
-  Com_Printf("Working directory: %s\n", Sys_Pwd());
+  /* Com_Printf("Working directory: %s\n", Sys_Pwd()); */
 
   // Sys_ConsoleInputInit() might be called in signal handler
   // so modify/init any cvars here
-  ttycon = Cvar_Get("ttycon", "1", 0);
-  Cvar_SetDescription(ttycon, "Enable access to input/output console terminal.");
-  ttycon_ansicolor = Cvar_Get("ttycon_ansicolor", "0", CVAR_ARCHIVE);
-  Cvar_SetDescription(ttycon_ansicolor, "Convert in-game color codes to ANSI color codes in console terminal.");
+  /* ttycon = Cvar_Get("ttycon", "1", 0); */
+  /* Cvar_SetDescription(ttycon, "Enable access to input/output console terminal."); */
+  /* ttycon_ansicolor = Cvar_Get("ttycon_ansicolor", "0", CVAR_ARCHIVE); */
+  /* Cvar_SetDescription(ttycon_ansicolor, "Convert in-game color codes to ANSI color codes in console terminal."); */
 
-  err = Sys_ConsoleInputInit();
-  if (err == TTY_ENABLED) {
-    Com_Printf("Started tty console (use +set ttycon 0 to disable)\n");
-  } else {
-    if (err == TTY_ERROR) {
-      Com_Printf("stdin is not a tty, tty console mode failed\n");
-      Cvar_Set("ttycon", "0");
-    }
-  }
+  /* err = Sys_ConsoleInputInit(); */
+  /* if (err == TTY_ENABLED) { */
+  /*   Com_Printf("Started tty console (use +set ttycon 0 to disable)\n"); */
+  /* } else { */
+  /*   if (err == TTY_ERROR) { */
+  /*     Com_Printf("stdin is not a tty, tty console mode failed\n"); */
+  /*     Cvar_Set("ttycon", "0"); */
+  /*   } */
+  /* } */
 
 #ifdef DEDICATED
   // init here for dedicated, as we don't have GLimp_Init
@@ -880,9 +880,9 @@ int main(int argc, const char* argv[]) {
 #endif
 
   while (1) {
-#ifdef __linux__
-    Sys_ConfigureFPU();
-#endif
+// #ifdef __linux__
+    /* Sys_ConfigureFPU(); */
+// #endif
 
 #ifdef DEDICATED
     // run the game

@@ -28,7 +28,11 @@ pub const flags = struct {
       "-DBOTLIB",
       "-DUSE_SIMD_SND=0",
       "-DID3_STATIC_LIBRARY",
-      "-DUSE_SDL", },
+      "-DUSE_SDL",
+      "-DUSE_VULKAN=1",
+      "-DUSE_VULKAN_API=1",
+      // Stop ZigCC from crashing the game due to UBSAN traps
+      "-fno-sanitize=all", },
     .ld = &.{
       "-lSDL2",
     }

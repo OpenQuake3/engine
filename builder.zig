@@ -95,6 +95,7 @@ pub fn main () !u8 {
   //__________________
   var engine = try confy.Program(.{
     .trg     = P.name.short,
+    .sub     = P.name.long.?,
     .entry   = dir.src++"/entry.zig",
     .version = P.version,
     .flags   = idtech3.flags,
