@@ -29,8 +29,8 @@ pub const flags = struct {
       "-DUSE_SIMD_SND=0",
       "-DID3_STATIC_LIBRARY",
       "-DUSE_SDL",
-      "-DUSE_VULKAN=1",
-      "-DUSE_VULKAN_API=1",
+      // "-DUSE_VULKAN",  // @note Already defined by   code/renderervk/tr_common.h
+      "-DUSE_VULKAN_API",
       // Stop ZigCC from crashing the game due to UBSAN traps
       "-fno-sanitize=all", },
     .ld = &.{
