@@ -43,7 +43,11 @@ const parse = struct {
     all.clearAndFree();
     try all.appendSlice(str);
     return result;
-  }
+  } //:: id3.cli.parse.early
+
+  //______________________________________
+  /// @descr Request C to parse our list of concatenated cli arguments
+  inline fn args (all :*const zstd.str) void { C.cli.parse.args(all.items.ptr); }
 };
 
 pub const Cli = struct {
@@ -55,6 +59,7 @@ pub const Cli = struct {
   vid    :struct { x:?i32=null, y:?i32=null },
   set    :Cli.Args,
 
+  //______________________________________
   pub fn init (A :std.mem.Allocator) !Cli {
     var result :Cli= undefined;
     result.A    = A;
@@ -72,5 +77,9 @@ pub const Cli = struct {
     std.debug.print("[id3.cli] Done parsing CLI Arguments.\n", .{});
     return result;
   } //:: id3.Cli.init
+
+  //______________________________________
+  /// @descr Parses all Command Line Arguments into configuration values for the engine
+  pub fn parse (V :*Cli) void { cli.parse.args(&V.all); }
 }; //:: id3.Cli
 

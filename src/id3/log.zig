@@ -12,3 +12,9 @@ pub const err   = C.log.err;
 pub const dbg   = C.log.dbg;
 pub const info  = C.log.info;
 
+pub const dev = struct {
+  pub const journal = struct {
+    pub const init = C.log.journal.init;
+  }; //:: id3.log.dev.journal
+}; //:: id3.log.dev
+

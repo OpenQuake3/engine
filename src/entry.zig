@@ -7,9 +7,6 @@
 //________________________________________________________________|
 // @deps std
 const std = @import("std");
-// @deps zstd
-const zstd  = @import("./lib/zstd.zig");
-const never = zstd.err;
 // @deps id3
 const id3 = @import("./id3.zig");
 
@@ -25,6 +22,6 @@ pub fn main () !u8 {
   const game = id3.Game.create(.{});
   var engine = try id3.Engine.init(game, A);
   engine.start();
-  return never();  // Should never happen. The engine has an internal termination process.
+  return error.ShouldNeverHappen;  // @note The engine has an internal termination process.
 }
 

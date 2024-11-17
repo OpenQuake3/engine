@@ -22,6 +22,7 @@ const c = struct {
   // @section System
   //____________________________
   extern fn Sys_Milliseconds () callconv(.C) c_int;
+  extern fn Sys_Error (err :[*c]const u8, ...) noreturn;
   extern fn Sys_Pwd () callconv(.C) [*c]const u8;
   extern fn IN_Frame () callconv(.C) void;
 
@@ -36,6 +37,7 @@ const c = struct {
       vid_xpos    : [*c]c_int,
       vid_ypos    : [*c]c_int
     ) callconv(.C) C.Bool;
+  extern fn Com_ParseCommandLine (arg_commandLine :[*c]u8) callconv(.C) void;
 
   //______________________________________
   // @section CVars
@@ -45,79 +47,91 @@ const c = struct {
   const cvarGroup_t     = c_uint;
   const cvarFlags_t     = c_uint;
   const Cvar = extern struct {
-    name              :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    string            :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    resetString       :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    latchedString     :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    flags             :c_int            = @import("std").mem.zeroes(c_int),
-    modified          :C.Bool           = @import("std").mem.zeroes(C.Bool),
-    modificationCount :c.Cvar.Flags     = @import("std").mem.zeroes(c_int),
-    value             :f32              = @import("std").mem.zeroes(f32),
-    integer           :c_int            = @import("std").mem.zeroes(c_int),
-    validator         :c.Cvar.Validator = @import("std").mem.zeroes(c.Cvar.Validator),
-    mins              :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    maxs              :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    description       :[*c]u8           = @import("std").mem.zeroes([*c]u8),
-    next              :[*c]c.Cvar       = @import("std").mem.zeroes([*c]c.Cvar),
-    prev              :[*c]c.Cvar       = @import("std").mem.zeroes([*c]c.Cvar),
-    hashNext          :[*c]c.Cvar       = @import("std").mem.zeroes([*c]c.Cvar),
-    hashPrev          :[*c]c.Cvar       = @import("std").mem.zeroes([*c]c.Cvar),
-    hashIndex         :c_int            = @import("std").mem.zeroes(c_int),
-    group             :c.Cvar.Group     = @import("std").mem.zeroes(c.Cvar.Group),
-    const Validator = enum(cvarValidator_t) { none, float, integer, fspath, max, _, };
-    const Group     = enum(cvarGroup_t) { none, renderer, server, max, _, };
-    const Flags     = packed struct {
-      /// set to cause it to be saved to vars.rc. Used for system variables, not for player specific configurations
+    name              :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    string            :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    resetString       :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    latchedString     :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    flags             :c_int        = @import("std").mem.zeroes(c_int),
+    modified          :C.Bool       = @import("std").mem.zeroes(C.Bool),
+    modificationCount :c.Cvar.Flags = @import("std").mem.zeroes(c_int),
+    value             :f32          = @import("std").mem.zeroes(f32),
+    integer           :c_int        = @import("std").mem.zeroes(c_int),
+    validator         :c.Cvar.Type  = @import("std").mem.zeroes(c.Cvar.Type),
+    mins              :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    maxs              :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    description       :[*c]u8       = @import("std").mem.zeroes([*c]u8),
+    next              :[*c]c.Cvar   = @import("std").mem.zeroes([*c]c.Cvar),
+    prev              :[*c]c.Cvar   = @import("std").mem.zeroes([*c]c.Cvar),
+    hashNext          :[*c]c.Cvar   = @import("std").mem.zeroes([*c]c.Cvar),
+    hashPrev          :[*c]c.Cvar   = @import("std").mem.zeroes([*c]c.Cvar),
+    hashIndex         :c_int        = @import("std").mem.zeroes(c_int),
+    group             :c.Cvar.Group = @import("std").mem.zeroes(c.Cvar.Group),
+    pub const Type  = enum(cvarValidator_t) { none, float, integer, fspath, max, _, };
+    pub const Group = enum(cvarGroup_t) { none, renderer, server, max, _, };
+    pub const Flags = packed struct {
+      /// @descr Set to cause it to be saved to vars.rc. Used for system variables, not for player specific configurations
       archive         :bool = false,  // 00 :: #define CVAR_ARCHIVE         0x0001
-      /// sent to server on connect or change
+      /// @descr Sent to server on connect or change
       info_user       :bool = false,  // 01 :: #define CVAR_USERINFO        0x0002
-      /// sent in response to front end requests
+      /// @descr Sent in response to front end requests
       info_server     :bool = false,  // 02 :: #define CVAR_SERVERINFO      0x0004
-      /// these cvars will be duplicated on all clients
+      /// @descr These cvars will be duplicated on all clients
       info_system     :bool = false,  // 03 :: #define CVAR_SYSTEMINFO      0x0008
-      /// don't allow change from console at all, but can be set from the command line
+      /// @descr Don't allow change from console at all, but can be set from the command line
       init            :bool = false,  // 04 :: #define CVAR_INIT            0x0010
-      /// will only change when C code next does a Cvar_Get(), so it can't be changed without proper initialization.
-      /// modified will be set, even though the value hasn't changed yet
+      /// @descr
+      ///  Will only change when C code next does a Cvar_Get(), so it can't be changed without proper initialization.
+      ///  Modified will be set, even though the value hasn't changed yet
       latch           :bool = false,  // 05 :: #define CVAR_LATCH           0x0020
-      /// display only, cannot be set by user at all
+      /// @descr Display only, cannot be set by user at all
       rom             :bool = false,  // 06 :: #define CVAR_ROM             0x0040 
-      /// created by a set command
+      /// @descr Created by a set command
       created_user    :bool = false,  // 07 :: #define CVAR_USER_CREATED    0x0080
-      /// can be set even when cheats are disabled, but is not archived
+      /// @descr Can be set even when cheats are disabled, but is not archived
       temp            :bool = false,  // 08 :: #define CVAR_TEMP            0x0100
-      /// can not be changed if cheats are disabled
+      /// @descr Can not be changed if cheats are disabled
       cheat           :bool = false,  // 09 :: #define CVAR_CHEAT           0x0200
-      /// do not clear when a cvar_restart is issued
+      /// @descr Do not clear when a cvar_restart is issued
       noRestart       :bool = false,  // 10 :: #define CVAR_NORESTART       0x0400
-      /// cvar was created by a server the client connected to.
+      /// @descr Cvar was created by a server that the client connected to.
       created_server  :bool = false,  // 11 :: #define CVAR_SERVER_CREATED  0x0800
-      /// cvar was created exclusively in one of the VMs.
+      /// @descr Cvar was created exclusively in one of the VMs.
       created_VM      :bool = false,  // 12 :: #define CVAR_VM_CREATED      0x1000
-      /// prevent modifying this var from VMs or the server
+      /// @descr Prevent modifying this var from VMs or the server
       protected       :bool = false,  // 13 :: #define CVAR_PROTECTED       0x2000
-      /// do not write to config if matching with default value
+      /// @descr Do not write to config if matching with default value
       noDefault       :bool = false,  // 14 :: #define CVAR_NODEFAULT       0x4000
-      /// can't be read from VM
+      /// @descr Can't be read from VM
       private         :bool = false,  // 15 :: #define CVAR_PRIVATE         0x8000
-      /// can be set only in developer mode
+      /// @descr Can be set only in developer mode
       developer       :bool = false,  // 16 :: #define CVAR_DEVELOPER       0x10000
-      /// no tab completion in console
+      /// @descr No tab completion in console
       noTabComplete   :bool = false,  // 17 :: #define CVAR_NOTABCOMPLETE   0x20000
       __unused_bits_18_29 :u12=0,
-      /// Cvar was modified.  Only returned by the Cvar_Flags() function
+      /// @descr Cvar was modified.  Only returned by the Cvar_Flags() function
       modified        :bool = false,  // 30 :: #define CVAR_MODIFIED        0x40000000
-      // Cvar doesn't exist.  Only returned by the Cvar_Flags() function
+      // @descr Cvar doesn't exist.  Only returned by the Cvar_Flags() function
       nonExistent     :bool = false,  // 31 :: #define CVAR_NONEXISTENT     0x80000000
 
       pub usingnamespace zstd.Flags(@This(), cvarFlags_t);
       pub const archive_ND :@This()= .{.archive=true, .noDefault=true };  // #define CVAR_ARCHIVE_ND (CVAR_ARCHIVE | CVAR_NODEFAULT)
-                                                                          //
     }; //:: id3.C.Cvar.Flags
   }; //:: id3.C.Cvar
-  extern fn Cvar_Get (name :[*c]const u8, value :[*c]const u8, flags :c.Cvar.Flags) callconv(.C) [*c]c.Cvar;
+  extern fn Cvar_Get (
+      name  : [*c]const u8,
+      value : [*c]const u8,
+      flags : c.Cvar.Flags
+    ) callconv(.C) [*c]c.Cvar;
   extern fn Cvar_SetDescription (V :[*c]c.Cvar, descr :[*c]const u8) callconv(.C) void;
   extern fn Cvar_Set (name: [*c]const u8, value: [*c]const u8) callconv(.C) void;
+  extern fn Cvar_Init () callconv(.C) void;
+  extern fn Com_StartupVariable (match :[*c]const u8) void;
+  extern fn Cvar_CheckRange(
+      cv  : [*c]c.Cvar,
+      min : [*c]const u8,
+      max : [*c]const u8,
+      typ : c.Cvar.Type,
+    ) callconv(.C) void;
 
   //______________________________________
   // @section TTY
@@ -136,12 +150,37 @@ const c = struct {
   extern fn Com_Error (level :c.Error, fmt: [*c]const u8, ...) callconv(.C) noreturn;
   extern fn Com_DPrintf (msg :[*c]const u8, ...) callconv(.C) void;
   extern fn Com_Printf (msg :[*c]const u8, ...) callconv(.C) void;
+  extern fn Com_InitJournaling () callconv(.C) void;
+
+  //______________________________________
+  // @section Filesystem
+  //____________________________
+  extern fn FS_InitFilesystem () callconv(.C) void;
+
+  //______________________________________
+  // @section Configuration File
+  //____________________________
+  extern fn Com_ExecuteCfg () callconv(.C) void;
 
   //______________________________________
   // @section Core
   //____________________________
   extern fn Com_Init (commandLine :[*c]u8) callconv(.C) void;
   extern fn Com_Frame (noDelay :C.Bool) callconv(.C) void;
+
+  //______________________________________
+  // @section Events Manager
+  //____________________________
+  extern fn Com_InitPushEvent () callconv(.C) void;
+
+  //______________________________________
+  // @section Commands
+  //____________________________
+  extern fn Cbuf_Init () callconv(.C) void;
+  extern fn Cmd_Init () callconv(.C) void;
+  extern fn Com_InitKeyCommands () callconv(.C) void;
+  const CommandFn = ?*const fn () callconv(.C) void;
+  extern fn Cmd_AddCommand(name: [*c]const u8, function: CommandFn) callconv(.C) void;
 
   //______________________________________
   // @section Network
@@ -152,6 +191,13 @@ const c = struct {
   // @section Client
   //____________________________
   extern fn CL_NoDelay() callconv(.C) C.Bool;
+
+  //______________________________________
+  // @section Memory
+  //____________________________
+  extern fn Com_InitSmallZoneMemory () callconv(.C) void;
+  extern fn Com_InitZoneMemory () callconv(.C) void;
+  extern fn Com_InitHunkMemory () callconv(.C) void;
 }; //:: C.wrapper
 
 
@@ -162,6 +208,7 @@ pub const sys = struct {
   pub const milliseconds = c.Sys_Milliseconds;
   pub const pwd          = c.Sys_Pwd;
   pub const configureFPU = c.Sys_ConfigureFPU;
+  pub const err          = c.Sys_Error;
   pub const input        = struct {
     pub const update     = c.IN_Frame;
   };
@@ -184,6 +231,7 @@ pub const tty = struct {
 pub const cli = struct {
   pub const parse = struct {
     pub const early = c.Com_EarlyParseCmdLine;
+    pub const args  = c.Com_ParseCommandLine;
   }; //:: id3.C.cli.parse
 }; //:: id3.C.cli
 
@@ -191,12 +239,33 @@ pub const cli = struct {
 //______________________________________
 // @section Logging
 //____________________________
-pub const log = struct {
-  pub const Error = c.Error;
-  pub const err   = c.Com_Error;
-  pub const dbg   = c.Com_DPrintf;
-  pub const info  = c.Com_Printf; // TODO: Varargs with @call  https://stackoverflow.com/questions/72122366/how-to-initialize-variadic-function-arguments-in-zig
+pub const log       = struct {
+  pub const Error   = c.Error;
+  pub const err     = c.Com_Error;
+  pub const dbg     = c.Com_DPrintf;
+  pub const info    = c.Com_Printf; // TODO: Varargs with @call  https://stackoverflow.com/questions/72122366/how-to-initialize-variadic-function-arguments-in-zig
+  pub const journal = struct {
+    pub const init  = c.Com_InitJournaling;
+  }; //:: id3.C.log.journal
 }; //:: id3.C.log
+
+
+//______________________________________
+// @section Filesystem
+//____________________________
+pub const fs         = C.filesystem;
+pub const filesystem = struct {
+  pub const init = c.FS_InitFilesystem;
+}; //:: id3.C.fs
+
+
+//______________________________________
+// @section Configuration File
+//____________________________
+pub const cfg = C.configuration;
+pub const configuration = struct {
+  pub const exec = c.Com_ExecuteCfg;
+}; //:: id3.C.cfg
 
 
 //______________________________________
@@ -209,23 +278,58 @@ pub const cvar = struct {
   pub const get      = c.Cvar_Get;
   pub const set      = c.Cvar_Set;
   pub const setDescr = c.Cvar_SetDescription;
+  pub const init     = c.Cvar_Init;
+  pub const startup  = c.Com_StartupVariable;
+  pub const range    = struct {
+    pub const check  = c.Cvar_CheckRange;
+  }; //:: id3.C.cvar.range
 }; //:: id3.C.cvar
 
 
 //______________________________________
 // @section Core
 //____________________________
-pub const core = struct {
+pub const core     = struct {
   pub const init   = c.Com_Init;
   pub const update = c.Com_Frame;
 }; //:: id3.C.core
 
+
+//______________________________________
+// @section Events Manager
+//____________________________
+pub const ev       = C.event;
+pub const event    = struct {
+  pub const push   = struct {
+    pub const init = c.Com_InitPushEvent;
+  }; //:: id3.C.event.push
+}; //:: id3.C.event
+
+
+//______________________________________
+// @section Commands
+//____________________________
+pub const cmd      = C.command;
+pub const command  = struct {
+  pub const init   = c.Cmd_Init;
+  pub const add    = c.Cmd_AddCommand;
+  pub const buffer = struct {
+    pub const init = c.Cbuf_Init;
+  };
+  pub const input  = struct {
+    pub const init = c.Com_InitKeyCommands;
+  };
+};
+
+
 //______________________________________
 // @section Network
 //____________________________
-pub const net = struct {
+pub const net        = C.networking;
+pub const networking = struct {
   pub const init = c.NET_Init;
 }; //:: id3.C.net
+
 
 //______________________________________
 // @section Client
@@ -233,4 +337,21 @@ pub const net = struct {
 pub const client = struct {
   pub const noDelay = c.CL_NoDelay;
 }; //:: id3.C.client
+
+
+//______________________________________
+// @section Memory
+//____________________________
+pub const mem        = C.memory;
+pub const memory     = struct {
+  pub const zone     = struct {
+    pub const init   = c.Com_InitZoneMemory;
+    pub const small  = struct {
+      pub const init = c.Com_InitSmallZoneMemory;
+    }; //:: id3.C.mem.zone.small
+  }; //:: id3.C.mem.zone
+  pub const hunk     = struct {
+    pub const init   = c.Com_InitHunkMemory;
+  }; //:: id3.C.mem.hunk
+}; //:: id3.C.mem
 
