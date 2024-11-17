@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..f6ebdf00 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2739,7 +2739,7 @@ static sysEvent_t Com_GetRealEvent( void ) {
+ Com_InitPushEvent
+ =================
+ */
+-static void Com_InitPushEvent( void ) {
++void Com_InitPushEvent( void ) {
+   // clear the static buffer array
+   // this requires SE_NONE to be accepted as a valid but NOP event
+   memset( com_pushedEvents, 0, sizeof(com_pushedEvents) );

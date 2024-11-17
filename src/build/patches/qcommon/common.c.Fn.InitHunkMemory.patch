@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..d70beeef 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2160,7 +2160,7 @@ void Hunk_SmallLog( void ) {
+ Com_InitHunkMemory
+ =================
+ */
+-static void Com_InitHunkMemory( void ) {
++void Com_InitHunkMemory( void ) {
+ 	cvar_t	*cv;
+ 
+ 	// make sure the file system has allocated and "not" freed any temp blocks

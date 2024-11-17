@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..f5dcb8fb 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2027,7 +2027,7 @@ unsigned int Com_TouchMemory( void ) {
+ Com_InitSmallZoneMemory
+ =================
+ */
+-static void Com_InitSmallZoneMemory( void ) {
++void Com_InitSmallZoneMemory( void ) {
+ 	static byte s_buf[ 512 * 1024 ];
+ 	int smallZoneSize;
+ 

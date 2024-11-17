@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..c293520a 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -464,7 +464,7 @@ Com_ParseCommandLine
+ Break it up into multiple console lines
+ ==================
+ */
+-static void Com_ParseCommandLine( char *commandLine ) {
++void Com_ParseCommandLine( char *commandLine ) {
+ 	static int parsed = 0;
+ 	int inq;
+ 

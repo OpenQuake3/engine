@@ -1,0 +1,22 @@
+diff --git a/code/unix/unix_main.c b/code/unix/unix_main.c
+index f21c224e..4a7f3038 100644
+--- a/code/unix/unix_main.c
++++ b/code/unix/unix_main.c
+@@ -81,7 +81,7 @@ typedef enum {
+ 
+ // enable/disabled tty input mode
+ // NOTE TTimo this is used during startup, cannot be changed during run
+-static cvar_t *ttycon = NULL;
++cvar_t *ttycon = NULL;
+ 
+ // general flag to tell about tty console mode
+ static qboolean ttycon_on = qfalse;
+@@ -100,7 +100,7 @@ static struct termios tty_tc;
+ 
+ static field_t tty_con;
+ 
+-static cvar_t *ttycon_ansicolor = NULL;
++cvar_t *ttycon_ansicolor = NULL;
+ static qboolean ttycon_color_on = qfalse;
+ 
+ tty_err Sys_ConsoleInputInit( void );

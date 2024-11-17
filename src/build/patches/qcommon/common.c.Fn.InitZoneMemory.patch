@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..e2745cb7 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2043,7 +2043,7 @@ static void Com_InitSmallZoneMemory( void ) {
+ Com_InitZoneMemory
+ =================
+ */
+-static void Com_InitZoneMemory( void ) {
++void Com_InitZoneMemory( void ) {
+ 	int		mainZoneSize;
+ 	cvar_t	*cv;
+ 

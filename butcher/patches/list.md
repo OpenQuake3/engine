@@ -1,25 +1,25 @@
-### engine_co/q_shared.h
-Enable compile-time definition of macros
-```c
-#if !defined(DEFAULT_GAME)
-#define DEFAULT_GAME			"defrag"
-#endif
-```
-```c
-#if !defined(Q3_VERSION)
-#define Q3_VERSION            "Q3 1.32e"
-#endif
-```
+<!-- ### engine_co/q_shared.h -->
+<!-- Enable compile-time definition of macros -->
+<!-- ```c -->
+<!-- #if !defined(DEFAULT_GAME) -->
+<!-- #define DEFAULT_GAME			"defrag" -->
+<!-- #endif -->
+<!-- ``` -->
+<!-- ```c -->
+<!-- #if !defined(Q3_VERSION) -->
+<!-- #define Q3_VERSION            "Q3 1.32e" -->
+<!-- #endif -->
+<!-- ``` -->
 
 
-### engine_cl/cl_main.c
-Switch sarge to ranger as default model
-```c
-Cvar_Get ("model", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND );
-Cvar_Get ("headmodel", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND );
-Cvar_Get ("team_model", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND );
-Cvar_Get ("team_headmodel", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND );
-```
+<!-- ### engine_cl/cl_main.c -->
+<!-- Switch sarge to ranger as default model -->
+<!-- ```c -->
+<!-- Cvar_Get ("model", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND ); -->
+<!-- Cvar_Get ("headmodel", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND ); -->
+<!-- Cvar_Get ("team_model", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND ); -->
+<!-- Cvar_Get ("team_headmodel", "ranger", CVAR_USERINFO | CVAR_ARCHIVE_ND ); -->
+<!-- ``` -->
 
 
 ### engine_co/vm.c

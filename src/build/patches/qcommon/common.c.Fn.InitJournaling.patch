@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..d5638e98 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2522,7 +2522,7 @@ static sysEvent_t com_pushedEvents[MAX_PUSHED_EVENTS];
+ Com_InitJournaling
+ =================
+ */
+-static void Com_InitJournaling( void ) {
++void Com_InitJournaling( void ) {
+ 	if ( !com_journal->integer ) {
+ 		return;
+ 	}
