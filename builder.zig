@@ -1,10 +1,6 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-// @deps zstd
-const zstd = @import("./src/lib/zstd.zig");
-const sh   = zstd.shell;
-const echo = zstd.echo;
 // @deps confy
 const confy = @import("./src/lib/confy.zig");
 const Name  = confy.Name;
@@ -96,7 +92,7 @@ pub fn main () !u8 {
   var engine = try confy.Program(.{
     .trg     = P.name.short,
     .sub     = P.name.long.?,
-    .entry   = dir.src++"/entry.zig",
+    .entry   = dir.src++"/entry.cpp",
     .version = P.version,
     .flags   = idtech3.flags,
     }, &builder);
