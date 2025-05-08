@@ -12,7 +12,7 @@ import ./build/engine
 #_______________________________________
 # @section Buildsystem Control
 #_____________________________
-const versEngine  = version(0, 0, 0)
+# const versEngine  = version(0, 0, 0)
 # CLI Control
 const debug    = on                                ## (note: should always be off)  Buildsystem debug mode on/off. Marking it `on` will test everything, ignoring all other filters
 let publish    = cli.getOpt("--publish") or debug  ## `./bin/build --publish` to publish the result to GitHub

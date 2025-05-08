@@ -1,5 +1,13 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-// @fileoverview Cable connector to the zstd module
-pub usingnamespace @import("./confy/src/lib/zstd.zig");
+#include "./base.h"
+
+typedef struct id3_Window {
+  u8 todo;  // TODO:
+} id3_Window;
+
+typedef struct id3_System {
+  id3_Window window;  // TODO:
+} id3_System;
+
