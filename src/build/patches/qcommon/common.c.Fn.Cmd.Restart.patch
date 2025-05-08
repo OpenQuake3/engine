@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..ed512f51 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3063,7 +3063,7 @@ Com_GameRestart_f
+ Expose possibility to change current running mod to the user
+ ==================
+ */
+-static void Com_GameRestart_f( void )
++void Com_GameRestart_f( void )
+ {
+ 	Cvar_Set( "fs_game", Cmd_Argv( 1 ) );
+ 

@@ -1,0 +1,17 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..893ef8b6 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3268,9 +3268,9 @@ out:
+ */
+ 
+ #ifdef USE_AFFINITY_MASK
+-static uint64_t eCoreMask;
+-static uint64_t pCoreMask;
+-static uint64_t affinityMask; // saved at startup
++uint64_t eCoreMask;
++uint64_t pCoreMask;
++uint64_t affinityMask; // saved at startup
+ #endif
+ 
+ #if (idx64 || id386)

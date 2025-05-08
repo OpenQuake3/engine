@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..4208e75a 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2970,7 +2970,7 @@ Com_Crash_f
+ A way to force a bus error for development reasons
+ =================
+ */
+-static void Com_Crash_f( void ) {
++void Com_Crash_f( void ) {
+ 	* ( volatile int * ) 0 = 0x12345678;
+ }
+ 

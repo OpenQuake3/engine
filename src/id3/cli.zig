@@ -55,7 +55,7 @@ pub const Cli = struct {
   A      :std.mem.Allocator,
   args   :std.process.ArgIterator,
   all    :zstd.str,  // FIX: Convert Com_EarlyParseCmdLine into a more sane API
-  title  :cvar.Name,
+  title  :cvar.Value,
   vid    :struct { x:?i32=null, y:?i32=null },
   set    :Cli.Args,
 

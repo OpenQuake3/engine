@@ -13,20 +13,11 @@ const id3 = struct {
   const debug = std.debug.runtime_safety;
 };
 
-
 //____________________________
-pub const cam_mode = struct {
-  extern var com_cameraMode :[*c]id3.C.Cvar;
-  pub var data    :id3.Cvar = undefined;
-  var defined     :bool     = false;
-  pub fn init   () void { @This().define(); data.init(); }
-  pub fn define () void { if (defined) return; data = id3.Cvar.define(&@This().com_cameraMode, "com_cameraMode", id3.Cvar.DefineOptions{
-    // FIX: Alias to cam_mode on console
-    .value   = "0",
-    .type    = .none,
-    .flags   = .{.cheat=true}
-    });
-    defined = true;
-  }
-};
+pub var cam_mode = id3.Cvar.define("com_cameraMode", "com_cameraMode", id3.Cvar.DefineOptions{
+  // FIX: Alias to cam_mode on console
+  .value = "0",
+  .type  = .none,
+  .flags = .{.cheat=true}
+});
 

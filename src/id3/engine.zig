@@ -9,19 +9,21 @@ const std = @import("std");
 // @deps id3c
 const C = @import("./C.zig");
 // @deps id3
-const id3  = @import("../id3.zig");
-const core = @import("./engine/core.zig");
-const cl   = @import("./engine/client.zig");
-const sv   = @import("./engine/server.zig");
-const net  = @import("./engine/net.zig");
-const tui  = @import("./ui/tui.zig");
-const TUI  = tui.TUI;
+const id3 = struct {
+ usingnamespace @import("../id3.zig");
+ const tui  = @import("./ui/tui.zig");
+};
+const core   = @import("./engine/core.zig");
+const sv     = @import("./engine/server.zig");
+const net    = @import("./net.zig");
+const TUI    = id3.tui.TUI;
 
 cli   :id3.Cli,
 cfg   :id3.Cfg,
 sys   :id3.System,
 tui   :id3.Engine.TUI,
 game  :id3.Game,
+time  :id3.time.Clock, // FIX:: Move it to Engine.sys when possible
 
 //______________________________________
 /// @descr
@@ -34,7 +36,8 @@ pub fn init (G :id3.Game, A :std.mem.Allocator) !Engine {
   result.cfg  = id3.Cfg.defaults();
   result.sys  = undefined;  // try id3.System.init(result.cfg.win.W, result.cfg.win.H, result.cfg.win.title);
   result.game = G;
-  Engine.core.init(&result.cli, result.cfg);
+  result.time = id3.time.start();
+  try Engine.core.init(&result.cli, result.cfg, id3.time.msec(&result.time));
   Engine.net.init();
   id3.info("[id3.info] Working directory: %s\n", id3.sys.pwd());
   result.tui = Engine.TUI.init();

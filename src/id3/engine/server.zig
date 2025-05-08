@@ -10,3 +10,4 @@ const C   = @import("../C.zig");
 // @deps id3
 const id3 = @import("../../id3.zig");
 
+pub const init = C.server.init;

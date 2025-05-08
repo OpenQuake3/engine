@@ -16,34 +16,18 @@ const id3 = struct {
 //______________________________________
 // @section Terminal UI: Console
 //____________________________
-pub const tui_con_enabled = struct {
-  extern var ttycon :[*c]id3.C.Cvar;
-  pub var data :id3.Cvar = undefined;
-  var defined  :bool     = false;
-  pub fn init   () void { @This().define(); data.init(); }
-  pub fn define () void { if (defined) return; data = id3.Cvar.define(&ttycon, "ttycon", id3.Cvar.DefineOptions{.descr=
-    "Enable access to input/output console terminal.",
-    // FIX: Alias to tui_con_enabled on console
-    .value = "1",
-    .type  = .integer,
-    });
-    defined = true;
-  }
-};
+pub var tui_con_enabled = id3.Cvar.define("ttycon", "ttycon", id3.Cvar.DefineOptions{.descr=
+  "Enable access to input/output console terminal.",
+  // FIX: Alias to tui_con_enabled on console
+  .value = "1",
+  .type  = .integer,
+});
 //____________________________
-pub const tui_con_colors = struct {
-  extern var ttycon_ansicolor :[*c]id3.C.Cvar;
-  pub var data :id3.Cvar = undefined;
-  var defined  :bool     = false;
-  pub fn init   () void { @This().define(); data.init(); }
-  pub fn define () void { if (defined) return; data = id3.Cvar.define(&ttycon_ansicolor, "ttycon_ansicolor", id3.Cvar.DefineOptions{.descr=
-    "Convert in-game color codes to ANSI color codes in console terminal.",
-    // FIX: Alias to tui_con_colors on console
-    .value = "0",
-    .type  = .integer,
-    .flags = .{.archive=true}
-    });
-    defined = true;
-  }
-};
+pub var tui_con_colors = id3.Cvar.define("ttycon_ansicolor", "ttycon_ansicolor", id3.Cvar.DefineOptions{.descr=
+  "Convert in-game color codes to ANSI color codes in console terminal.",
+  // FIX: Alias to tui_con_colors on console
+  .value = "0",
+  .type  = .integer,
+  .flags = .{.archive=true}
+});
 

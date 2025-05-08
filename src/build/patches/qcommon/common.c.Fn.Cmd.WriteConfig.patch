@@ -1,0 +1,22 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..aac4ff35 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -122,7 +122,7 @@ qboolean	gw_active = qtrue;
+ static char com_errorMessage[ MAXPRINTMSG ];
+ 
+ static void Com_Shutdown( void );
+-static void Com_WriteConfig_f( void );
++void Com_WriteConfig_f( void );
+ void CIN_CloseAllVideos( void );
+ 
+ //============================================================================
+@@ -4092,7 +4092,7 @@ Com_WriteConfig_f
+ Write the config file to a specific name
+ ===============
+ */
+-static void Com_WriteConfig_f( void ) {
++void Com_WriteConfig_f( void ) {
+ 	char	filename[MAX_QPATH];
+ 	const char *ext;
+ 

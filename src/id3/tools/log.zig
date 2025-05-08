@@ -5,7 +5,7 @@
 //________________________|
 pub const log = @This();
 // @deps id3c
-const C = @import("./C.zig");
+const C = @import("../C.zig");
 
 pub const Error = C.log.Error;
 pub const err   = C.log.err;

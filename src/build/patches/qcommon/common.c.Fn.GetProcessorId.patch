@@ -1,0 +1,31 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..882a290b 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3331,7 +3331,7 @@ static void CPUID_EX( int func, int param, unsigned int *regs )
+ 
+ #endif  // clang/gcc/mingw
+ 
+-static void Sys_GetProcessorId( char *vendor )
++void Sys_GetProcessorId( char *vendor )
+ {
+ 	uint32_t regs[4]; // EAX, EBX, ECX, EDX
+ 	uint32_t cpuid_level_ex;
+@@ -3464,7 +3464,7 @@ static void DetectCPUCoresConfig( void )
+ 
+ #ifndef __linux__
+ 
+-static void Sys_GetProcessorId( char *vendor )
++void Sys_GetProcessorId( char *vendor )
+ {
+ 	Com_sprintf( vendor, 100, "%s", ARCH_STRING );
+ }
+@@ -3477,7 +3477,7 @@ static void Sys_GetProcessorId( char *vendor )
+ #include <asm/hwcap.h>
+ #endif
+ 
+-static void Sys_GetProcessorId( char *vendor )
++void Sys_GetProcessorId( char *vendor )
+ {
+ #if arm32
+ 	const char *platform;

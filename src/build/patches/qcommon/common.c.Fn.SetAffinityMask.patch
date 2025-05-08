@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..71fcb016 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3719,7 +3719,7 @@ static const char *parseAffinityMask( const char *str, uint64_t *outv, int level
+ 
+ 
+ // parse and set affinity mask
+-static void Com_SetAffinityMask( const char *str )
++void Com_SetAffinityMask( const char *str )
+ {
+ 	uint64_t mask = 0;
+ 

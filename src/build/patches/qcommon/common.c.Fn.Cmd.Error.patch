@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..5ab1df63 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2925,7 +2925,7 @@ Just throw a fatal error to
+ test error shutdown procedures
+ =============
+ */
+-static void __attribute__((__noreturn__)) Com_Error_f (void) {
++void __attribute__((__noreturn__)) Com_Error_f (void) {
+ 	if ( Cmd_Argc() > 1 ) {
+ 		Com_Error( ERR_DROP, "Testing drop error" );
+ 	} else {

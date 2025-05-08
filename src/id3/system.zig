@@ -5,3 +5,4 @@
 //________________________________________________________________|
 pub usingnamespace @import("./system/core.zig");
 pub usingnamespace @import("./system/tools.zig");
+pub const time = @import("./system/time.zig").time;

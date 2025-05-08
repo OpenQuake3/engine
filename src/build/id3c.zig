@@ -1,8 +1,8 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-//! @fileoverview Cable connector for building id-Tech as a SCU
-//_______________________________________________________________|
+//! @fileoverview Tools for building id-Tech as a SCU
+//____________________________________________________|
 const id3c = @This();
 // @deps std
 const std = @import("std");

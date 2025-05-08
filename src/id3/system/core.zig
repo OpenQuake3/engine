@@ -12,10 +12,9 @@ const cstr = zstd.cstr;
 const cb     = @import("./cb.zig");
 const Window = @import("./window.zig").Window;
 const Input  = @import("./input.zig").Input;
+const id3    = @import("./tools.zig");
 const time   = @import("./time.zig");
 const Time   = time.Clock;
-const id3    = @import("./tools.zig");
-
 
 pub const Data  = struct {
   win   :system.Window,

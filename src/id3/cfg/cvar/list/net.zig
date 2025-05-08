@@ -15,24 +15,17 @@ const id3 = struct {
 };
 
 //______________________________________
-// @section 
+// @section Protocol Configuration
 //____________________________
-pub const net_protocol = struct {
-  extern var com_protocol :[*c]id3.C.Cvar;
-  pub var data :id3.Cvar = undefined;
-  var defined  :bool     = false;
-  pub fn init   () void { @This().define(); data.init(); }
-  pub fn define () void { if (defined) return; data = id3.Cvar.define(&com_protocol, "protocol", id3.Cvar.DefineOptions{.descr=
-    "Specify network protocol version number. Use -compat suffix for OpenArena compatibility.",
-    // FIX: Alias to net_protocol on console
-    .value = id3.cfg.Network.Protocol.version.old, .range=.{.min="0", .max=null},
-    .type  = .integer,
-    .flags = .{.init=true, .protected=true},
-    });
-    defined = true;
-  }
-};
+pub var net_protocol = id3.Cvar.define("com_protocol", "protocol", id3.Cvar.DefineOptions{.descr=
+  "Specify network protocol version number. Use -compat suffix for OpenArena compatibility.",
+  // FIX: Alias to net_protocol on console
+  .value = id3.cfg.Network.Protocol.vers.old, .range=.{.min="0", .max=null},
+  .type  = .integer,
+  .flags = .{.init=true, .protected=true},
+});
 
+//____________________________
 pub const net_protocol_compat = struct {
   extern var com_protocolCompat :id3.C.Bool;
   pub fn set (v :bool) void { com_protocolCompat = @intFromBool(v); }

@@ -25,6 +25,16 @@ const c = struct {
   extern fn Sys_Error (err :[*c]const u8, ...) noreturn;
   extern fn Sys_Pwd () callconv(.C) [*c]const u8;
   extern fn IN_Frame () callconv(.C) void;
+  extern fn Sys_Init () callconv(.C) void;
+  //____________________________
+  // @section System: CPU
+  extern fn Sys_GetProcessorId (vendor :[*c]u8) callconv(.C) void;
+  extern fn Sys_GetAffinityMask () callconv(.C) u64;
+  extern fn DetectCPUCoresConfig () callconv(.C) void;
+  extern fn Com_SetAffinityMask (str :[*c]const u8) callconv(.C) void;
+  //____________________________
+  // @section System: Console
+  extern fn Sys_ShowConsole (level :c_int, quitOnClose :C.Bool) callconv(.C) void;
 
   //______________________________________
   // @section CLI
@@ -51,9 +61,9 @@ const c = struct {
     string            :[*c]u8       = @import("std").mem.zeroes([*c]u8),
     resetString       :[*c]u8       = @import("std").mem.zeroes([*c]u8),
     latchedString     :[*c]u8       = @import("std").mem.zeroes([*c]u8),
-    flags             :c_int        = @import("std").mem.zeroes(c_int),
+    flags             :c.Cvar.Flags = .{},
     modified          :C.Bool       = @import("std").mem.zeroes(C.Bool),
-    modificationCount :c.Cvar.Flags = @import("std").mem.zeroes(c_int),
+    modificationCount :c_int        = @import("std").mem.zeroes(c_int),
     value             :f32          = @import("std").mem.zeroes(f32),
     integer           :c_int        = @import("std").mem.zeroes(c_int),
     validator         :c.Cvar.Type  = @import("std").mem.zeroes(c.Cvar.Type),
@@ -134,7 +144,7 @@ const c = struct {
     ) callconv(.C) void;
 
   //______________________________________
-  // @section TTY
+  // @section TUI
   //____________________________
   const tty_err    = c_uint;
   const tty_Status = enum(c.tty_err) { enabled, disabled, err };
@@ -163,6 +173,11 @@ const c = struct {
   extern fn Com_ExecuteCfg () callconv(.C) void;
 
   //______________________________________
+  // @section Virtual Machine
+  //____________________________
+  extern fn VM_Init () callconv(.C) void;
+
+  //______________________________________
   // @section Core
   //____________________________
   extern fn Com_Init (commandLine :[*c]u8) callconv(.C) void;
@@ -181,16 +196,38 @@ const c = struct {
   extern fn Com_InitKeyCommands () callconv(.C) void;
   const CommandFn = ?*const fn () callconv(.C) void;
   extern fn Cmd_AddCommand(name: [*c]const u8, function: CommandFn) callconv(.C) void;
+  const CompletionFn = ?*const fn (args :[*c]const u8, argNum :c_int) callconv(.C) void;
+  extern fn Cmd_SetCommandCompletionFunc (command :[*c]const u8, complete :CompletionFn) void;
+  //______________________________________
+  // Command: Functions
+  extern fn Com_Error_f               () callconv(.C) void;
+  extern fn Com_Crash_f               () callconv(.C) void;
+  extern fn Com_Freeze_f              () callconv(.C) void;
+  extern fn Com_Quit_f                () callconv(.C) void;
+  extern fn MSG_ReportChangeVectors_f () callconv(.C) void;
+  extern fn Com_WriteConfig_f         () callconv(.C) void;
+  extern fn Com_GameRestart_f         () callconv(.C) void;
+  //______________________________________
+  // Command Completion: Functions
+  extern fn Cmd_CompleteWriteCfgName (args :[*c]const u8, argNum :c_int) callconv(.C) void;
 
   //______________________________________
   // @section Network
   //____________________________
   extern fn NET_Init () callconv(.C) void;
+  extern fn Netchan_Init (port :c_int) callconv(.C) void;
 
   //______________________________________
   // @section Client
   //____________________________
-  extern fn CL_NoDelay() callconv(.C) C.Bool;
+  extern fn CL_NoDelay () callconv(.C) C.Bool;
+  extern fn CL_Init () callconv(.C) void;
+  extern fn CL_StartHunkUsers () callconv(.C) void;
+
+  //______________________________________
+  // @section Server
+  //____________________________
+  extern fn SV_Init () callconv(.C) void;
 
   //______________________________________
   // @section Memory
@@ -198,6 +235,14 @@ const c = struct {
   extern fn Com_InitSmallZoneMemory () callconv(.C) void;
   extern fn Com_InitZoneMemory () callconv(.C) void;
   extern fn Com_InitHunkMemory () callconv(.C) void;
+
+  //______________________________________
+  // @section Math
+  //____________________________
+  //...
+  //____________________________
+  // @section Math: Random
+  extern fn Com_RandomBytes (string :[*c]const u8, len :c_int) callconv(.C) void;
 }; //:: C.wrapper
 
 
@@ -205,19 +250,26 @@ const c = struct {
 // @section System
 //____________________________
 pub const sys = struct {
-  pub const milliseconds = c.Sys_Milliseconds;
-  pub const pwd          = c.Sys_Pwd;
-  pub const configureFPU = c.Sys_ConfigureFPU;
-  pub const err          = c.Sys_Error;
-  pub const input        = struct {
-    pub const update     = c.IN_Frame;
-  };
+  pub const milliseconds  = c.Sys_Milliseconds;
+  pub const pwd           = c.Sys_Pwd;
+  pub const configureFPU  = c.Sys_ConfigureFPU;
+  pub const err           = c.Sys_Error;
+  pub const init          = c.Sys_Init;
+  pub const input         = struct {
+    pub const update      = c.IN_Frame;
+  }; //:: id3.C.sys.input
+  pub const cpu           = struct {
+    pub const getID       = c.Sys_GetProcessorId;
+    pub const getMask     = c.Sys_GetAffinityMask;
+    pub const detectCfg   = c.DetectCPUCoresConfig;
+    pub const setAffinity = c.Com_SetAffinityMask;
+  }; //:: id3.C.sys.cpu
 }; //:: id3.C.sys
 
 //______________________________________
 // @section TTY
 //____________________________
-pub const tty = struct {
+pub const tui = struct {
   pub const Status = c.tty_Status;
   pub const input = struct {
     pub const init = c.Sys_ConsoleInputInit;
@@ -309,17 +361,40 @@ pub const event    = struct {
 //______________________________________
 // @section Commands
 //____________________________
-pub const cmd      = C.command;
-pub const command  = struct {
-  pub const init   = c.Cmd_Init;
-  pub const add    = c.Cmd_AddCommand;
-  pub const buffer = struct {
-    pub const init = c.Cbuf_Init;
-  };
-  pub const input  = struct {
-    pub const init = c.Com_InitKeyCommands;
-  };
-};
+pub const cmd             = C.command;
+pub const command         = struct {
+  pub const init          = c.Cmd_Init;
+  pub const add           = c.Cmd_AddCommand;
+  pub const buffer        = struct {
+    pub const init        = c.Cbuf_Init;
+  }; //:: id3.C.cmd.buffer
+  pub const input         = struct {
+    pub const init        = c.Com_InitKeyCommands;
+  }; //:: id3.C.cmd.input
+  pub const Fn            = struct {
+    pub const Error       = c.Com_Error_f;
+    pub const crash       = c.Com_Crash_f;
+    pub const freeze      = c.Com_Freeze_f;
+    pub const quit        = c.Com_Quit_f;
+    pub const report      = struct {
+      pub const changeVec = c.MSG_ReportChangeVectors_f ;
+    }; //:: id3.C.cmd.Fn.report
+    pub const cfg         = struct {
+      pub const write     = c.Com_WriteConfig_f;
+    }; //:: id3.C.cmd.Fn.cfg
+    pub const game        = struct {
+      pub const restart   = c.Com_GameRestart_f;
+    }; //:: id3.C.cmd.Fn.game
+  }; //:: id3.C.cmd.Fn
+  pub const completion    = struct {
+    pub const setFn       = c.Cmd_SetCommandCompletionFunc;
+    pub const Fn          = struct {
+      pub const cfg       = struct {
+        pub const write   = c.Cmd_CompleteWriteCfgName;
+      }; //:: id3.C.cmd.completion.Fn.cfg
+    }; //:: id3.C.cmd.completion.Fn
+  }; //:: id3.C.cmd.completion
+}; //:: id3.C.cmd
 
 
 //______________________________________
@@ -327,7 +402,11 @@ pub const command  = struct {
 //____________________________
 pub const net        = C.networking;
 pub const networking = struct {
-  pub const init = c.NET_Init;
+  pub const init     = c.NET_Init;
+  pub const channel  = C.networking.chan;
+  pub const chan     = struct {
+    pub const init   = c.Netchan_Init;
+  }; //:: id3.C.net.chan
 }; //:: id3.C.net
 
 
@@ -336,7 +415,17 @@ pub const networking = struct {
 //____________________________
 pub const client = struct {
   pub const noDelay = c.CL_NoDelay;
+  pub const init    = c.CL_Init;
+  pub const start   = c.CL_StartHunkUsers;
 }; //:: id3.C.client
+
+
+//______________________________________
+// @section Server
+//____________________________
+pub const server = struct {
+  pub const init = c.SV_Init;
+}; //:: id3.C.server
 
 
 //______________________________________
@@ -354,4 +443,32 @@ pub const memory     = struct {
     pub const init   = c.Com_InitHunkMemory;
   }; //:: id3.C.mem.hunk
 }; //:: id3.C.mem
+
+
+//______________________________________
+// @section Math
+//____________________________
+pub const math = struct {
+  pub const random = struct {
+    pub const bytes = c.Com_RandomBytes;
+  }; //:: id3.C.math.random
+}; //:: id3.C.math
+
+
+//______________________________________
+// @section VM
+//____________________________
+pub const vm     = struct {
+  pub const init = c.VM_Init;
+}; //:: id3.C.vm
+
+
+//______________________________________
+// @section Console
+//____________________________
+pub const con      = struct {
+  pub const sys    = struct {
+    pub const show = c.Sys_ShowConsole;
+  }; //:: id3.C.con.sys
+}; //:: id3.C.con
 

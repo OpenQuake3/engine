@@ -11,7 +11,7 @@ const id3 = struct {
 };
 
 pub const State  = *[*c]C.Cvar;
-pub const Name   = [C.cvar.MaxLen]u8;
+pub const Value  = [C.cvar.MaxLen]u8;
 pub const Flags  = C.Cvar.Flags;
 pub const Type   = C.Cvar.Type;
 pub const Group  = C.Cvar.Group;

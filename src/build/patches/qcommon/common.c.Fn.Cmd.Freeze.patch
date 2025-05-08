@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..010dd867 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -2942,7 +2942,7 @@ Just freeze in place for a given number of seconds to test
+ error recovery
+ =============
+ */
+-static void Com_Freeze_f( void ) {
++void Com_Freeze_f( void ) {
+ 	int		s;
+ 	int		start, now;
+ 

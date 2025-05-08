@@ -1,0 +1,13 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index f00ab420..a3545d76 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3420,7 +3420,7 @@ static void Sys_GetProcessorId( char *vendor )
+ 
+ 
+ #ifdef USE_AFFINITY_MASK
+-static void DetectCPUCoresConfig( void )
++void DetectCPUCoresConfig( void )
+ {
+ 	uint32_t regs[4];
+ 	uint32_t i;

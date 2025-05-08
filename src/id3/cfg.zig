@@ -58,7 +58,7 @@ pub const Network = struct {
   pub const Protocol = struct {
     version  :Network.Protocol.Version,
     pub const Version = id3.String;
-    pub const version = struct {
+    pub const vers = struct {
       /// @descr Protocol of version:  1.31
       pub const v131 :Network.Protocol.Version= "67";
       pub const old  :Network.Protocol.Version= "68";  // OLD_PROTOCOL_VERSION  qcommon.h
@@ -79,23 +79,23 @@ pub fn defaults () @This() { return @This(){
     .title       = "id-Tech3 | Engine",
     }, //:: result.win
   .engine        = Cfg.Engine{
-    .version     = "oQ3 1.32e",                   // FIX: Take from defines.build.version
-    .platform    = "linux-x86_64-debug",          // FIX: Take from defines.build.platform
+    .version     = "oQ3 1.32e",                // FIX: Take from defines.build.version
+    .platform    = "linux-x86_64-debug",       // FIX: Take from defines.build.platform
     .server      = Cfg.Server{
-      .dedicated = false,                         // FIX: Take from defines.server.dedicated
+      .dedicated = false,                      // FIX: Take from defines.server.dedicated
       }, //:: result.engine.server
     }, //:: result.engine
   .game          = Cfg.Game{
-    .name        = "defrag",                      // FIX: Take from defines.game.name
-    .version     = "1.32e",                       // FIX: Take from defines.game.version
+    .name        = "defrag",                   // FIX: Take from defines.game.name
+    .version     = "1.32e",                    // FIX: Take from defines.game.version
     }, //:: result.game
   .net           = Cfg.Network{
     .protocol    = Cfg.Network.Protocol{
-      .version   = Network.Protocol.version.old,  // FIX: Take from defines.network.protocol.version
+      .version   = Network.Protocol.vers.old,  // FIX: Take from defines.network.protocol.version
       }, //:: result.net.protocol
     }, //:: result.net
   .cpu           = Cfg.Cpu{
-    .affinity    = true,                          // FIX: Take from defines.cpu.affinity
+    .affinity    = true,                       // FIX: Take from defines.cpu.affinity
     }, //:: result.cpu
   }; //:: result
 } //:: id3.Cfg.defaults

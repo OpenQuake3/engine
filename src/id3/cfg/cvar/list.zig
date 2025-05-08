@@ -19,3 +19,4 @@ pub usingnamespace @import("./list/cam.zig");
 pub usingnamespace @import("./list/cl.zig");
 pub usingnamespace @import("./list/sv.zig");
 pub usingnamespace @import("./list/res.zig");
+pub usingnamespace @import("./list/co.zig");
