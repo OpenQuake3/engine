@@ -1,6 +1,8 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
+#if !defined H_id3_base
+#define H_id3_base
 // @deps std
 #include <stdio.h>
 #include <stdint.h>
@@ -16,3 +18,6 @@ typedef uint64_t    u64;
 typedef int64_t     i64;
 typedef size_t      Sz;
 typedef char const* cstr;
+
+#endif  // H_id3_base
+

@@ -5,10 +5,12 @@
 //!  Engine Debug Example                                         |
 //!  Will run the engine with the default QuakeIIIArena Gamecode  |
 //________________________________________________________________|
-#include "./id3/engine.h"
+#include "./id3.h"
 #include "./q3a.h"
 
-// Engine: Cross-Platform Entry Point
+/// @description
+/// Engine: Cross-Platform Entry Point Example.
+/// Will setup and launch QuakeIIIArena gamecode.
 int main (
   int const                argc,
   char const* const* const argv
@@ -19,3 +21,4 @@ int main (
   id3_start(&engine);
   return id3_ShouldNeverHappen;  // The engine has an internal termination system
 }
+

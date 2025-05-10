@@ -1,7 +1,7 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#include "./game.h"
+#include "../game.h"
 
 id3_Game id3_game_create (
   id3_Args const* const          cli,

@@ -19,13 +19,13 @@ const engine_version = version(0,0,0)
 #_____________________________
 const engine_entry  = "quake3.c"
 const engine_source = @[ # FIX: Get with glob
-  "id3/args.c",
-  "id3/engine.c",
-  "id3/game.c",
+  "id3/tools/args.c",
+  "id3/engine/core.c",
+  "id3/game/core.c",
   ]
 const engine_flags = Flags(cc: @[
-  "-std=c2x",
-  "-Wno-pre-c23-compat"
+  "-Wno-pre-c23-compat",
+  "-Wno-documentation-unknown-command",
 ])
 
 #_______________________________________

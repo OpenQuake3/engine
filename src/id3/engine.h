@@ -1,11 +1,11 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined ID3_ENGINE_H
-#define ID3_ENGINE_H
+#if !defined H_id3_engine
+#define H_id3_engine
 
 #include "./base.h"
-#include "./args.h"
+#include "./tools.h"
 #include "./game.h"
 #include "./system.h"
 
@@ -17,17 +17,27 @@ typedef struct id3_Engine {
   id3_Args   cli;
   id3_Game   game;
   id3_Client cl;
-  u8 priv_pad[7];
+  u8         priv_pad[5];
 } id3_Engine;
+
+/// @description
+/// Initializes the engine and all its required data.
+/// Should call {@link Engine.start()} on the resulting object after calling this function.
+/// @return The engine's data object.
 id3_Engine id3_init (id3_Args const* const cli, id3_Game const game);
-void       id3_update (id3_Engine* engine);
-bool       id3_close (id3_Engine const* engine);
-void       id3_start (id3_Engine* const engine);
 
-typedef enum id3_Result {
-  id3_Ok                = 0,
-  id3_ShouldNeverHappen = 123,
-  id3_Result_ForceU8    = 255,
-} id3_Result;
+/// @description
+/// Executes a single frame of the engine
+void id3_update (id3_Engine* engine);
 
-#endif  // ID3_ENGINE_H
+/// @description
+/// Returns true when the engine should terminate/close.
+bool id3_close (id3_Engine const* engine);
+
+/// @description
+/// Starts the Engine's process, giving full ownership of the code to the engine.
+/// @note (TODO: not yet implemented) Use {@link id3_close} and {@link id3_update} if you want to retain ownership.
+void id3_start (id3_Engine* const engine);
+
+#endif  // H_id3_engine
+

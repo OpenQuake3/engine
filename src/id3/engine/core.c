@@ -1,14 +1,12 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#include "./engine.h"
+#include "../engine.h"
 
 id3_Engine id3_init (
   id3_Args const* const cli,
   id3_Game const        game
 ) {
-  (void)game; /*discard*/
-
   printf("Hello oQ3 Entry\n");
   return (id3_Engine){
     .cli  = *cli,
@@ -30,15 +28,9 @@ void id3_update (
   return;
 }
 
-#if defined __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-#endif
 void id3_start (
   id3_Engine* engine
 ) {
-  while (true) id3_update(engine);
+  while (!id3_close(engine)) id3_update(engine);
 }
-#if defined __clang__
-#pragma clang diagnostic pop
-#endif
+

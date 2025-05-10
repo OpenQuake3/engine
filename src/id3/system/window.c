@@ -1,10 +1,5 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_system
-#define H_id3_system
-
-#include "./system/core.h"
-
-#endif  // H_id3_system
+#include "../system.h"
 

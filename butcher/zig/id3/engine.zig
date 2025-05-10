@@ -26,10 +26,6 @@ game  :id3.Game,
 time  :id3.time.Clock, // FIX:: Move it to Engine.sys when possible
 
 //______________________________________
-/// @descr
-///  Initializes the engine and all its required data.
-///  Should call {@link Engine.start()} on the resulting object after calling this function.
-/// @return The engine's data object.
 pub fn init (G :id3.Game, A :std.mem.Allocator) !Engine {
   var result :Engine= undefined;
   result.cli  = try id3.Cli.init(A);
@@ -52,13 +48,4 @@ fn update (E :*Engine) void {
   Engine.core.update(E.cfg);
 } //:: id3.Engine.update
 
-//______________________________________
-/// @descr Returns true when the engine should terminate/close.
-fn close (E :*const Engine) bool { return E.sys.close(); }
-
-//______________________________________
-/// @descr
-///  Starts the engine loop and never returns.
-///  Takes control of the application as soon as it is called.
-pub fn start (E :*Engine) void { while (!E.close()) E.update(); }
 
