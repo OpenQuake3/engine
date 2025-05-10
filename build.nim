@@ -1,7 +1,11 @@
 #:__________________________________________________________________
 #  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 #:__________________________________________________________________
+# @deps confy
 import confy
+# @deps builder
+import ./src/build/glfw
+
 
 #_______________________________________
 # @section Engine: Configuration
@@ -56,6 +60,7 @@ const tests = UnitTest.new(
 #_____________________________
 # Order to build
 tests.build()
+glfw.build()
 quake3.build()
 # Order to run
 tests.run()
