@@ -9,16 +9,9 @@ id3_Engine id3_init (
 ) {
   printf("Hello oQ3 Entry\n");
   return (id3_Engine){
-    .cli  = *cli,
+    .cli  = id3_cli_init(cli),
     .game = game,
   };
-}
-
-bool id3_close (
-  id3_Engine const* engine
-) {
-  (void)engine; /*discard*/
-  return false;
 }
 
 void id3_update (
@@ -26,6 +19,13 @@ void id3_update (
 ) {
   (void)engine; /*discard*/
   return;
+}
+
+bool id3_close (
+  id3_Engine const* engine
+) {
+  (void)engine; /*discard*/
+  return false;
 }
 
 void id3_start (

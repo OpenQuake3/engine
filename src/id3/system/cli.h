@@ -4,7 +4,13 @@
 #if !defined H_id3_system_cli
 #define H_id3_system_cli
 
-typedef char id3_CLI; ///< TODO:
+#include "../tools/args.h"
+
+typedef struct id3_CLI {
+  id3_Args args;
+} id3_CLI;
+
+id3_CLI id3_cli_init (id3_Args const* const cli);
 
 #endif  // H_id3_system_cli
 

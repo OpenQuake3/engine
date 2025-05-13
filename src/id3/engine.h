@@ -14,7 +14,7 @@ typedef struct id3_Client {
 } id3_Client;
 
 typedef struct id3_Engine {
-  id3_Args   cli;
+  id3_CLI    cli;
   id3_Game   game;
   id3_Client cl;
   u8         priv_pad[5];

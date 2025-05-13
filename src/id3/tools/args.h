@@ -14,3 +14,4 @@ typedef struct id3_Args {
 id3_Args id3_args_parse (int const argc, cstr const* const argv);
 
 #endif  // H_id3_tools_args
+
