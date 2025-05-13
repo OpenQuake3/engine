@@ -5,64 +5,28 @@
 import confy
 # @deps builder
 import ./src/build/glfw
-
-
-#_______________________________________
-# @section Engine: Configuration
-#_____________________________
-const engine_name    = "oQ3"
-const engine_version = version(0,0,0)
-
+import ./src/build/quake3
+import ./src/build/tests
 
 #_______________________________________
-# @section Engine: Source Code
+# @section Buildsystem Control
 #_____________________________
-const engine_entry  = "quake3.c"
-const engine_source = @[ # FIX: Get with glob
-  "id3/tools/args.c",
-  "id3/engine/core.c",
-  "id3/game/core.c",
-  ]
-const engine_flags = Flags(cc: @[
-  "-Wno-pre-c23-compat",
-  "-Wno-documentation-unknown-command",
-])
+# CLI Control
+const debug    = on                             ## (note: should always be off)  Buildsystem debug mode on/off. Marking it `on` will test everything, ignoring all other filters
+let publish    = cli.has("--publish") or debug  ## `./bin/build --publish` to publish the result to GitHub
+let release    = cli.has("r") or publish        ## `./bin/build -r` to run the automatic release generation process
+let distribute = cli.has("d") or release        ## `./bin/build -d` to build the distributable version
+let pack       = cli.has("p") or distribute     ## `./bin/build -p` to pack everything
 
-#_______________________________________
-# @section QuakeIIIArena: Source Code
-#_____________________________
-const quake3_source = @[
-  "q3a/entry.c",
-]
-
-
-#_______________________________________
-# @section QuakeIIIArena: Build Target
-#_____________________________
-const quake3 = Program.new(
-  trg     = engine_name,
-  entry   = engine_entry,
-  src     = engine_source & quake3_source,
-  flags   = engine_flags,
-  version = engine_version,
-)
-
-#_______________________________________
-# @section Unit Testing: Build Target
-#_____________________________
-const tests = UnitTest.new(
-  trg   = engine_name&".test",
-  entry = "test.zig",
-)
 
 #_______________________________________
 # @section Build & Run
 #_____________________________
 # Order to build
+quake3.report()
 tests.build()
 glfw.build()
-quake3.build()
+quake3.build(pack)
 # Order to run
-tests.run()
 quake3.run()
 
