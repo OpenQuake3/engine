@@ -6,6 +6,7 @@
 
 #include "./tools/results.h"
 #include "./tools/args.h"
+#include "./tools/time.h"
 
 #endif  // H_id3_tools
 
