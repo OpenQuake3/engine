@@ -8,10 +8,16 @@ id3_Engine id3_init (
   id3_Game const        game
 ) {
   printf("Hello oQ3 Entry\n");
-  return (id3_Engine){
-    .cli  = id3_cli_init(cli),
+  id3_Engine result = (id3_Engine){
+    .cfg  = id3_cfg_defaults(),
     .game = game,
+    .cl   = id3_cl_init(cli),
+    .time = id3_time_start(),
   };
+
+  id3_log_echo("[id3.info] %s %s %s\n", id3_meta_Version, id3_meta_BuildPlatform, id3_meta_BuildDate);
+
+  return result;
 }
 
 void id3_update (

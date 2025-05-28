@@ -33,6 +33,8 @@ pub fn init (G :id3.Game, A :std.mem.Allocator) !Engine {
   result.sys  = undefined;  // try id3.System.init(result.cfg.win.W, result.cfg.win.H, result.cfg.win.title);
   result.game = G;
   result.time = id3.time.start();
+
+
   try Engine.core.init(&result.cli, result.cfg, id3.time.msec(&result.time));
   Engine.net.init();
   id3.info("[id3.info] Working directory: %s\n", id3.sys.pwd());

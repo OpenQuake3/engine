@@ -76,6 +76,8 @@ pub const init   = id3.core.init_WIP;
 /// @originally Com_Init : id3.core.raw.init
 pub fn init_WIP (cli :*id3.Cli, cfg :id3.Cfg, now :u64) !void {
   id3.info("[id3.info] %s %s %s\n", cfg.engine.version.ptr, cfg.engine.platform.ptr, defines.build.date);
+
+
   if (!id3.unsafe.jmp.set()) id3.sys.err("Error during initialization");
   // Init early systems: mem.small and events
   id3.event.push.init();

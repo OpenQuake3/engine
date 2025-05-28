@@ -4,7 +4,11 @@
 #if !defined H_id3_config_engine
 #define H_id3_config_engine
 
-// TODO:
+typedef struct id3_Config {
+  char todo;
+} id3_Config;
+
+id3_Config id3_cfg_defaults ();
 
 #endif  // H_id3_config_engine
 

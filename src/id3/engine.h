@@ -8,16 +8,14 @@
 #include "./tools.h"
 #include "./game.h"
 #include "./system.h"
-
-typedef struct id3_Client {
-  id3_System system;
-} id3_Client;
+#include "./config.h"
+#include "./engine/client.h"
 
 typedef struct id3_Engine {
-  id3_CLI    cli;
-  id3_Game   game;
+  id3_Config cfg;
   id3_Client cl;
-  u8         priv_pad[5];
+  id3_Game   game;
+  id3_Time   time;
 } id3_Engine;
 
 /// @description

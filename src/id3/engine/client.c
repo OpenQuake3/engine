@@ -1,12 +1,13 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_system_input
-#define H_id3_system_input
+#include "./client.h"
 
-typedef char id3_Input;  ///< TODO:
-
-id3_Input id3_sys_input_init ();
-
-#endif  // H_id3_system_input
+id3_Client id3_cl_init (
+  id3_Args const* const cli
+) {
+  return (id3_Client){
+    .system = id3_sys_init(cli),
+  };
+}
 
