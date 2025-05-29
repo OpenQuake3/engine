@@ -73,19 +73,8 @@ pub fn main () !u8 {
   P.report();
 
   //______________________________________
-  // @section Build Dependencies
-  //____________________________
-  try glfw.build(&builder, alwaysClean);
-
-  //______________________________________
   // @section Define Targets
   //____________________________
-  _= try confy.UnitTest(.{
-    .trg     = "tests",
-    .entry   = dir.src++"/tests.zig",
-    .version = P.version,
-    }, &builder);
-  //__________________
   var id3 = try confy.StaticLib(.{
     .trg     = "libid3c",
     .src     = idtech3.src.engine,
