@@ -15,9 +15,19 @@ import ./idtech3
 #_____________________________
 var cfg * = confy.Config()
 cfg.dirs.src = cfg.dirs.src/"q3a"
-let version * = version(1,32,0,"b")
+const name   = "Quake-III-Arena"
+const author = "id-Software"
+const package * = confy.package.Info(
+  name        : quake3.name,
+  description : engine.name.human&" | "&quake3.name&" GPL source release by "&quake3.author,
+  author      : Name(short:quake3.author, long:quake3.author, human:quake3.author),
+  license     : "GPLv3-or-later",
+  repo        : Repository(owner:quake3.author, name:quake3.name),
+  url         : "https://idsoftware.com",
+  version     : version(1,32,0,"b"),
+  ) #:: quake3.package.Info
 # Source Code
-let entry  * = "quake3.c"
+let entry * = "quake3.c"
 proc source *() :auto= confy.glob(quake3.cfg.dirs.src)
 
 
@@ -35,7 +45,7 @@ proc target *(
       trg     = engine.name.short,
       src     = engine.source() & quake3.source(),
       flags   = engine.flags(lib),
-      version = quake3.version,
+      version = quake3.package.version,
       remotes = Remotes.none(),
       ) #:: quake3
     result[^1].src.add engine.cfg.dirs.src/".."/quake3.entry
@@ -56,6 +66,7 @@ proc report *(
     silent : bool = off;
   ) :void=
   if silent: return
+  quake3.package.report()
   for trg in quake3.target(libid3):
     trg.report()
 
