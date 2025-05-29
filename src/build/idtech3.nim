@@ -1,8 +1,8 @@
 #:__________________________________________________________________
 #  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 #:__________________________________________________________________
-##! @fileoverview Tools to compile id-Tech3 as a Static Library
-#_______________________________________________________________|
+##! @fileoverview Tools and configuration for compiling id-Tech3 as a Static Library
+#_____________________________________________________________________________________|
 # @deps ndk
 from nstd/defines import nil
 # @deps buildsystem

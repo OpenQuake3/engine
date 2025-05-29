@@ -1,8 +1,8 @@
 #:__________________________________________________________________
 #  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 #:__________________________________________________________________
-#! @fileoverview Build Dependencies: GLFW
-#__________________________________________|
+##! @fileoverview Tools and configuration for compiling glfw with confy
+#________________________________________________________________________|
 # @deps std
 import std/os
 # @deps build
