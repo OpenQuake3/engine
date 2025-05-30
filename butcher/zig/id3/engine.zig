@@ -44,10 +44,3 @@ pub fn init (G :id3.Game, A :std.mem.Allocator) !Engine {
   return result;
 } //:: id3.Engine.init
 
-fn update (E :*Engine) void {
-  // E.sys.update();
-  id3.sys.FPU.configure();
-  Engine.core.update(E.cfg);
-} //:: id3.Engine.update
-
-
