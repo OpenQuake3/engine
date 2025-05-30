@@ -5,7 +5,7 @@
 #define H_id3_config_engine
 
 typedef struct id3_Config {
-  char todo;
+  bool dedicated;
 } id3_Config;
 
 id3_Config id3_cfg_defaults ();
