@@ -40,5 +40,5 @@ if debug:
   quake3.report(lib, silent)
   let q3a = quake3.build(lib)
   if pack: quake3.pack(q3a)
-  builder.runHost(q3a)
+  # builder.runHost(q3a)
 
