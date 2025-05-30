@@ -11,14 +11,16 @@ It provides modern features for mods and users that would be incompatible with o
 ## Running your Mod
 OpenQuake3 Engine's architecture is distinct and completely separate from other id-Tech3 engines.  
 There is no such concept as "loading a mod" in this engine.  
-Using vanilla concepts, a game based on OpenQuake3 Engine based will be the engine and the game -at the same time-.  
+
+Using vanilla concepts, a game running on OpenQuake3 Engine  
+will become the engine and the game -at the same time-.  
 _See the [Modularity](#modularity) section for more details._
 
 This means that you can't just grab your mod files and run them as they are.  
 You need to create explicit support for your game's C code to run with this engine.  
-The entry file at [src/quake3.c](./src/quake3.c) provides an example of how to run the C code of your game.
+The entry file at [src/quake3.c](./src/quake3.c) provides an example of how to connect your game with the engine.
 
-## Internals
+## Internals & Architecture
 OpenQuake3 Engine tries to change just enough to provide support for modern features and capabilities.  
 But it contains features that are "Not Vanilla", and therefore would be rejected by Vanilla Engines like Quake3e and oDFe.  
 _(eg: Adding support for separate crouch/jump inputs, enabling native font support for mods, changing the `trap_` callbacks API to add new features, etc)_
@@ -42,7 +44,7 @@ and a clear distinction between the functionality of each section of the engine.
 
 Just like other modern engines and frameworks would do,  
 this engine provides the basic building blocks to create a game with it.  
-It is then the responsibility of the game to use the engine API to create the entry point for their game.  
+It is then the responsibility of the game to use the engine API to create the entry point for their application.  
 
 ### Buildsystem
 #### libidtech3
@@ -84,10 +86,10 @@ Confy is not just used by this project, **it exists** because of this project.
 
 Some other buildsystems that have already been **thoroughly** tested, and **proven** to not solve the problems:
 ```md
-- make        : Cryptic bash syntax, outdated restrictions, platform specific, declarative
-- cmake       : Improved but still cryptic syntax, convoluted workflow, platform specific, declarative, needs a complete rewrite to be usable... only to end up at square one
-- SCons       : Python+SCons is difficult to install, Python stdlib is unintuitive, typeless language, declarative
-- meson/ninja : Similar to cmake, provides little (or nothing) better than SCons, declarative
+- make  : Cryptic bash syntax, outdated restrictions, platform specific, declarative
+- cmake : Improved but still cryptic syntax, convoluted workflow, platform specific, declarative, needs a complete rewrite to be usable... only to end up at square one
+- SCons : Python+SCons is difficult to install, Python stdlib is unintuitive, typeless language, declarative
+- meson : Similar to cmake, provides little (or nothing) better than SCons, declarative
 ```
 All of them proved to have the same exact issues when dealing with the complexity of id-Tech3's buildsystem architecture.  
 As such we don't provide support for other buildsystems, and never will.  
@@ -96,7 +98,5 @@ As such we don't provide support for other buildsystems, and never will.
 > Building this project is just a single call to `confy build`.  
 > So, before blanket rejecting the buildsystem and writing your own cmake script from scratch _(has happened before)_,  
 > consider that there might be valid reasons for confy to exist, and give it a test run.  
->
-> You might be surprised about its ease of use.  
 > _It was made for this engine and this very goal after all._  
 
