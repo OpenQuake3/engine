@@ -4,14 +4,16 @@
 #if !defined H_id3_tools_args
 #define H_id3_tools_args
 
-#include "../base.h"
+#include "../cstd.h"
+#include "../idtech3/config/cvar.h"
 
 typedef struct id3_Args {
-  Sz const          argc;
-  cstr const* const argv;
+  Sz        argc;
+  cstr_list argv;
+  char*     merged;
 } id3_Args;
 
-id3_Args id3_args_parse (int const argc, cstr const* const argv);
+id3_Args id3_args_create (int const argc, cstr_list const argv);
 
 #endif  // H_id3_tools_args
 
