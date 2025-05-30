@@ -2,7 +2,7 @@
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
 //! @fileoverview                                                 |
-//!  Engine Debug Example                                         |
+//!  Debug Example                                                |
 //!  Will run the engine with the default QuakeIIIArena Gamecode  |
 //________________________________________________________________|
 #include "./id3.h"
@@ -12,13 +12,13 @@
 /// Engine: Cross-Platform Entry Point Example.
 /// Will setup and launch QuakeIIIArena gamecode.
 int main (
-  int const                argc,
-  char const* const* const argv
+  i32 const       argc,
+  cstr_list const argv
 ) {
-  id3_Args const cli           = id3_args_parse(argc, argv);
-  id3_Game const QuakeIIIArena = q3a_create(&cli);
-  id3_Engine     engine        = id3_init(&cli, QuakeIIIArena);
-  id3_start(&engine);
-  return id3_ShouldNeverHappen;  // The engine has an internal termination system
+  id3_Args const args          = id3_args_create(argc, argv);
+  id3_Game const QuakeIIIArena = q3a_create(&args);
+  id3_Engine     engine        = id3_create(&args, QuakeIIIArena, /*dedicated=*/ false);
+  id3_start(&engine);  // Will never return. The engine has an internal termination system
+  std_discard(id3_ShouldNeverHappen);
 }
 
