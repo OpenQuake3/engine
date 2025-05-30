@@ -1,11 +1,12 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_idtech3_shared
-#define H_id3_idtech3_shared
+#if !defined H_id3_idtech3_engine_common
+#define H_id3_idtech3_engine_common
+#include "../base.h"
 
-#include "./base.h"
-#include "./tools.h"
+void Com_Init (char* commandLine);
+void Com_Frame (qboolean noDelay);
 
-#endif  //H_id3_idtech3_shared
+#endif  // H_id3_idtech3_engine_common
 
