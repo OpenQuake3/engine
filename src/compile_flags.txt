@@ -1,2 +1,3 @@
+-std=c2x
 -I./lib/idtech3/code
 -I./src/lib/idtech3/code
