@@ -6,7 +6,7 @@
 #if !defined H_id3_game
 #define H_id3_game
 
-#include "./base.h"
+#include "./cstd.h"
 #include "./tools/args.h"
 
 typedef void* id3_game_UserData;
