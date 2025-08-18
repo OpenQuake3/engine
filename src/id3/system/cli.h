@@ -1,17 +1,16 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_system_cli
+#ifndef H_id3_system_cli
 #define H_id3_system_cli
-
 // @deps idtech3
-#include "../idtech3/shared.h"
 #include "../idtech3/tools/cli.h"
 #include "../idtech3/config/cvar.h"
 // @deps engine
 #include "../tools/results.h"
 #include "../tools/args.h"
 #include "../tools/log.h"
+
 
 typedef struct id3_CLI {
   id3_Args args;
@@ -37,6 +36,13 @@ void id3_cli_parse_early (id3_Args const* const args);
 /// @description
 /// Parse the arguments of the given cli object to create the internal data used by the engine
 std_pragma_MayNotReturn void id3_cli_init (id3_CLI* cli);
+
+/// @description
+/// Orders the engine to parse the `cli.merged` command line arguments.
+/// It will add all its arguments into configuration values for the engine,
+/// in order to prepare enough of the subsystems to handle cvar and command buffer management
+void id3_cli_parse (id3_CLI const* const cli);
+
 
 #endif  // H_id3_system_cli
 

@@ -8,7 +8,7 @@ id3_Result id3_cli_shouldVersionHelpAndQuit (
   id3_Args const* const cli
 ) {
   for (Sz id = 0; id < cli->argc; ++id) {
-    cstr const arg = cli->argv[id];
+    std_cstring const arg = cli->argv[id];
     if (std_cstr_equal(arg, "--version")) return id3_VersionAndQuit;
     if (std_cstr_equal(arg, "--help")) return id3_HelpAndQuit;
   }
@@ -64,5 +64,12 @@ void id3_cli_init (
   // #endif
   //__________________________________________________
   id3_cli_parse_early(&cli->args);
+}
+
+
+void id3_cli_parse (
+  id3_CLI const* const cli
+) {
+  Com_ParseCommandLine(cli->args.merged);
 }
 
