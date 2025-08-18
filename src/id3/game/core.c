@@ -4,23 +4,24 @@
 #include "../game.h"
 
 id3_Game id3_game_create (
-  id3_Args const* const          cli,
-  id3_game_callback_UI const     ui,
-  id3_game_callback_Client const cl,
-  id3_game_callback_Server const sv
+  id3_game_create_args const* const args
 ) {
   return (id3_Game){
-    .cli = *cli,
-    .ui  = ui,
-    .cl  = cl,
-    .sv  = sv,
+    .cli = *args->cli,
+    .ui  = args->ui,
+    .cl  = args->cl,
+    .sv  = args->sv,
+    .cfg = args->cfg,
   };
 }
 
 void id3_game_destroy (
   id3_Game* const game
 ) {
-  game->ui = NULL;
-  game->cl = NULL;
-  game->sv = NULL;
+  game->cli = (id3_Args){ 0 };
+  game->ui  = NULL;
+  game->cl  = NULL;
+  game->sv  = NULL;
+  game->cfg = (id3_game_Config){ 0 };
 }
+
