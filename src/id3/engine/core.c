@@ -25,7 +25,9 @@ void id3_init (
   id3_Engine* engine
 ) {
   id3_cli_init(&engine->cli);
-  engine->co = id3_co_init(&engine->cli, engine->cfg.dedicated);
+  engine->co = id3_co_init_original(&engine->cli, engine->cfg.dedicated);
+  // engine->co = id3_co_init(&engine->cli, &engine->cfg, &engine->game.cfg);
+  engine->co = id3_co_init(&engine->cli, &engine->cfg, &engine->game.cfg);
   engine->cl = id3_cl_init(&engine->cli, &engine->co);
 }
 
