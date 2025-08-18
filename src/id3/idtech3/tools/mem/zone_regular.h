@@ -1,11 +1,10 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_idtech3_shared
-#define H_id3_idtech3_shared
+#ifndef H_id3_idtec3_tools_mem_zone_regular
+#define H_id3_idtec3_tools_mem_zone_regular
 
-#include "./base.h"
-#include "./tools.h"
+void Com_InitZoneMemory (void);
 
-#endif  //H_id3_idtech3_shared
+#endif  // H_id3_idtec3_tools_mem_zone_regular
 

@@ -3,6 +3,7 @@
 //:__________________________________________________________________
 #if !defined H_id3_idtech3_config_cvar
 #define H_id3_idtech3_config_cvar
+#include "../flags.silence.h"
 
 #define id3_cvar_value_string_MaxLen 256
 
@@ -80,6 +81,9 @@ typedef struct cvar_s id3_Cvar;
 void    Cvar_Set (char const* var_name, char const* value);
 cvar_t* Cvar_Get (char const* var_name, char const* value, int flags);
 void    Cvar_SetDescription (cvar_t* var, char const* var_description);
+void    Cvar_Init (void);
+void    Com_StartupVariable (char const* match);
+
 
 #endif  // H_id3_idtech3_config_cvar
 

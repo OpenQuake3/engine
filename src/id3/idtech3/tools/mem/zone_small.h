@@ -1,11 +1,10 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#ifndef H_id3_idtech3_tools_log
-#define H_id3_idtech3_tools_log
-#include "../base.h"
+#ifndef H_id3_idtec3_tools_mem_zone_small
+#define H_id3_idtec3_tools_mem_zone_small
 
-void FORMAT_PRINTF(1, 2) QDECL Com_Printf(char const* msg, ...);
+void Com_InitSmallZoneMemory (void);
 
-#endif  // H_id3_idtech3_tools_log
+#endif  // H_id3_idtec3_tools_mem_zone_small
 
