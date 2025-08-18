@@ -1,13 +1,13 @@
 # Last Revision: Clang.19
 ---
 Language                                   : Cpp
-#BasedOnStyle:  Chromium                        # Actually: Heavily modified style, mainly related to spaces/tabs and long lines
+#BasedOnStyle:  Chromium                        # Heavily modified chromium style
 DisableFormat                              : false
 UseTab                                     : Never
 TabWidth                                   : 2
 IndentWidth                                : 2
 PPIndentWidth                              : 0    # -1 = default
-ColumnLimit                                : 160  # 2x NEP1
+ColumnLimit                                : 160
 # SeparateDefinitionBlocks:                       Leave
 SortIncludes                               : Never
 
