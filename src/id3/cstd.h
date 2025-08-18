@@ -3,7 +3,7 @@
 //:__________________________________________________________________
 //! @fileoverview Collection of C stdlib aliases and helpers.
 //____________________________________________________________|
-#if !defined H_id3_cstd
+#ifndef H_id3_cstd
 #define H_id3_cstd
 // @deps std
 #include <stdio.h>
@@ -14,7 +14,7 @@
 
 
 //______________________________________
-// @section Aliases: Numbers
+// @section Aliases: Primitives
 //____________________________
 
 typedef uint8_t  u8;
@@ -26,19 +26,19 @@ typedef int32_t  i32;
 typedef uint64_t u64;
 typedef int64_t  i64;
 typedef size_t   Sz;
+typedef void*    std_pointer;
 
 
 //______________________________________
 // @section Aliases: Strings
 //____________________________
 
-typedef char const* cstr;
-typedef cstr const* cstr_list;
+typedef char const* std_cstring;
+typedef std_cstring const* std_cstring_list;
 #define std_cstr_equal(A,B) strcmp((A),(B)) == 0
 #define std_cstr_equal_caseInsensitive(A,B) strcmpi((A),(B)) == 0
 #define std_cstr_add(A,B) strcat((A),(B))
 #define std_cstr_len(A) strlen((A))
-
 
 
 //______________________________________
@@ -49,14 +49,12 @@ typedef cstr const* cstr_list;
 #define std_exit(code) exit((int)code)
 
 
-
 //______________________________________
 // @section Aliases: Memory Management Tools
 //____________________________
 
 #define std_alloc(T,len) (T)malloc((len))
 #define std_free(P) free((P))
-
 
 
 //______________________________________
@@ -86,6 +84,7 @@ typedef cstr const* cstr_list;
 /// Information marker for values that can potentially be null
 #define std_pragma_Nullable /** Nullable */
 #endif
+
 
 #endif  // H_id3_cstd
 
