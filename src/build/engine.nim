@@ -53,6 +53,7 @@ func flags *(
   "-Wno-documentation",
   "-Wno-documentation-unknown-command",
   "-Wno-switch-enum",
+  "-Wno-unsafe-buffer-usage",  # All buffers are unsafe in C. Flag is mostly for C++
   # Stop ZigCC from silently crashing at runtime due to UBSAN traps
   "-fno-sanitize-trap=all",
   ], ld: engine.linkFlags(libid3).ld)

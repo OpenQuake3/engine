@@ -21,7 +21,7 @@ const name * = Name(short: "QuakeIIIArena", long: "Quake-III-Arena", human: "Qua
 const author = "id-Software"
 const package * = confy.package.Info(
   name        : quake3.name.long,
-  description : engine.name.human&" | "&quake3.name.human&"by "&quake3.author,
+  description : engine.name.human&" | "&quake3.name.human&" by "&quake3.author,
   author      : Name(short:quake3.author, long:quake3.author, human:quake3.author),
   license     : "GPLv3-or-later",
   repo        : Repository(owner:quake3.author, name:quake3.name.long),
