@@ -6,8 +6,8 @@
 
 // TODO: Connect with the engine.
 //       Reference: https://github.com/heysokam/idtech3-modules/tree/master/src/mem
-// #include "./mem/zone_small.h"
-// #include "./mem/zone_regular.h"
+#include "./mem/zone_small.h"
+#include "./mem/zone_regular.h"
 // #include "./mem/hunk.h"
 
 #endif  // H_id3_tools_mem
