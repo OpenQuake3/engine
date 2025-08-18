@@ -26,7 +26,12 @@
 /// @description
 /// Returns a reference to a new Cvar created with the given options
 /// @param description Will be ignored when NULL
-id3_Cvar* id3_cvar_create (cstr const name, cstr const value, id3_cvar_Flags flags, cstr const std_pragma_Nullable description);
+id3_Cvar* id3_cvar_create ( // clang-format off
+  std_cstring const                     name,
+  std_cstring const                     value,
+  id3_cvar_Flags const                  flags,
+  std_cstring const std_pragma_Nullable description
+); // clang-format on
 
 /// @description
 /// Sets the internal value of the cvar identified by the given name.
@@ -42,6 +47,27 @@ id3_Cvar* id3_cvar_create (cstr const name, cstr const value, id3_cvar_Flags fla
 #define id3_cvar_get             Cvar_Get
 
 #define id3_cvar_description_set Cvar_SetDescription
+
+/// @description
+/// 1. Initializes the GlobalState of the cvar system
+/// 2. Creates the cvar_cheats (`sv_cheats`) and cvar_developer (`developer`) variables
+/// 3. Adds all basic/primary commands into the engine
+#define id3_cvar_list_init_core  Cvar_Init
+
+/// @description
+/// Set a specific cvar requested from CLI.
+/// Will set all Cvars when `match` is null.
+#define id3_cvar_init_fromCLI Com_StartupVariable
+
+/// @description
+/// Override anything from the config files with command line args
+void id3_cvar_list_startup ();
+
+/// @description
+/// Override anything from the config files with command line args
+/// FIX: TODO
+void id3_cvar_list_init_early ();
+
 
 #endif  // H_id3_config_cvar
 
