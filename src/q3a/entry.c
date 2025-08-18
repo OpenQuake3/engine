@@ -13,10 +13,17 @@ void q3a_sv(id3_game_UserData data) { (void)data; }
 id3_Game q3a_create (
   id3_Args const* const cli
 ) {
-  return (id3_Game){
-    .cli = *cli,
-    .ui  = q3a_ui,
-    .cl  = q3a_cl,
-    .sv  = q3a_sv,
-  };
+  return id3_game_create(&(id3_game_create_args) /* clang-format off */ {
+    .cli       = cli,
+    .ui        = q3a_ui,
+    .cl        = q3a_cl,
+    .sv        = q3a_sv,
+    .cfg       = &(id3_game_Config){
+      .name    = (id3_Name){
+        .Short = "baseq3",
+        .Long  = "QuakeIIIArena",
+        .human = "QuakeIIIArena",
+      }, //:: .cfg.name
+    }, //:: .cfg
+  }); //:: result = id3_game_create
 }
