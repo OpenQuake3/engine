@@ -1,9 +1,9 @@
 //:__________________________________________________________________
 //  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GNU GPLv3 or later  :
 //:__________________________________________________________________
-#if !defined H_id3_system
+#ifndef H_id3_system
 #define H_id3_system
-
+// @deps id3
 #include "./system/cli.h"
 #include "./system/input.h"
 #include "./system/window.h"
@@ -13,6 +13,7 @@ typedef struct id3_System {
   id3_CLI    cli;
   id3_Input  input;
   id3_Window window;  //< TODO: GLFW
+  char       priv_pad[6];
 } id3_System;
 
 /// @description

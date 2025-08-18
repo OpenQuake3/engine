@@ -15,6 +15,7 @@
 typedef struct id3_Engine {
   id3_CLI    cli;
   id3_Config cfg;
+  char       priv_pad[7];
   id3_Common co;
   id3_Client cl;
   id3_Game   game;
