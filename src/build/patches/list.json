@@ -25,8 +25,8 @@
   { "path": "qcommon/common.c.Fn.Cmd.Restart.patch",         "description": "Change Com_GameRestart_f visibility to public" },
   { "path": "qcommon/common.c.Fn.Cmd.WriteConfig.patch",     "description": "Change Com_WriteConfig_f visibility to public" },
 
-  { "path": "client/cl_main.c.ranger.patch",                 "description": "Change default player model to ranger" },
-
   { "path": "qcommon/vm.c.native_libs.patch",                "description": "Use native libraries by default" },
-  { "path": "server/sv_init.c.sv_pure.patch",                "description": "Set sv_pure to 0 by default" }
+  { "path": "server/sv_init.c.sv_pure.patch",                "description": "Set sv_pure to 0 by default" },
+
+  { "path": "client/cl_main.c.ranger.patch",                 "description": "Change default player model to ranger" }
 ]
