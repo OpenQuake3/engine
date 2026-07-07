@@ -74,9 +74,9 @@ void id3_term (
 
 
 std_pragma_NoReturn void id3_quit (
-  id3_Engine*      engine,
-  id3_Result const code,
-  cstr const       message
+  id3_Engine*       engine,
+  id3_Result const  code,
+  std_cstring const message
 ) {
   id3_log_echo("%s", message);
   id3_term(engine);
