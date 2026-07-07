@@ -1,0 +1,32 @@
+[
+  { "path": "unix/unix_main.c.lib.patch",                    "description": "Allow compilation as a static library" },
+
+  { "path": "client/snd_mix.c.simd.patch",                   "description": "Allow SIMD sound configuration from the buildsystem" },
+  { "path": "client/snd_mix.c.sse_underscore.patch",         "description": "Remove leading underscore from SSE function for clang compatibility" },
+  { "path": "qcommon/q_shared.h.configurable.patch",         "description": "Allow configuring Version and DefaultGame from the buildsystem" },
+
+  { "path": "unix/unix_main.c.state.tty.patch",              "description": "Change tty state visibility to public" },
+  { "path": "qcommon/common.c.state.jmp.patch",              "description": "Change abortframe visibility to public" },
+  { "path": "qcommon/common.c.state.affinityMasks.patch",    "description": "Change affinity mask state visibility to public" },
+  { "path": "qcommon/common.c.state.cvars.com.patch",        "description": "Change com_* cvar state visibility to public" },
+  { "path": "qcommon/common.c.Fn.InitPushEvent.patch",       "description": "Change Com_InitPushEvent visibility to public" },
+  { "path": "qcommon/common.c.Fn.InitSmallZoneMemory.patch", "description": "Change Com_InitSmallZoneMemory visibility to public" },
+  { "path": "qcommon/common.c.Fn.InitZoneMemory.patch",      "description": "Change Com_InitZoneMemory visibility to public" },
+  { "path": "qcommon/common.c.Fn.InitHunkMemory.patch",      "description": "Change Com_InitHunkMemory visibility to public" },
+  { "path": "qcommon/common.c.Fn.InitJournaling.patch",      "description": "Change Com_InitJournaling visibility to public" },
+  { "path": "qcommon/common.c.Fn.ParseCommandLine.patch",    "description": "Change Com_ParseCommandLine visibility to public" },
+  { "path": "qcommon/common.c.Fn.ExecuteCfg.patch",          "description": "Change Com_ExecuteCfg visibility to public" },
+  { "path": "qcommon/common.c.Fn.GetProcessorId.patch",      "description": "Change Sys_GetProcessorId visibility to public" },
+  { "path": "qcommon/common.c.Fn.DetectCPUCoresConfig.patch","description": "Change DetectCPUCoresConfig visibility to public" },
+  { "path": "qcommon/common.c.Fn.SetAffinityMask.patch",     "description": "Change Com_SetAffinityMask visibility to public" },
+  { "path": "qcommon/common.c.Fn.Cmd.Crash.patch",           "description": "Change Com_Crash_f visibility to public" },
+  { "path": "qcommon/common.c.Fn.Cmd.Error.patch",           "description": "Change Com_Error_f visibility to public" },
+  { "path": "qcommon/common.c.Fn.Cmd.Freeze.patch",          "description": "Change Com_Freeze_f visibility to public" },
+  { "path": "qcommon/common.c.Fn.Cmd.Restart.patch",         "description": "Change Com_GameRestart_f visibility to public" },
+  { "path": "qcommon/common.c.Fn.Cmd.WriteConfig.patch",     "description": "Change Com_WriteConfig_f visibility to public" },
+
+  { "path": "client/cl_main.c.ranger.patch",                 "description": "Change default player model to ranger" },
+
+  { "path": "qcommon/vm.c.native_libs.patch",                "description": "Use native libraries by default" },
+  { "path": "server/sv_init.c.sv_pure.patch",                "description": "Set sv_pure to 0 by default" }
+]
