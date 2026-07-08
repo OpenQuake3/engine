@@ -22,21 +22,6 @@ index 9e23d282..e5a87a6d 100644
  	Cvar_SetDescription( cl_motd, "Toggle the display of the 'Message of the day'. When Quake 3 Arena starts a map up, it sends the GL_RENDERER string to the Message Of The Day server at id. This responds back with a message of the day to the client." );
  
  	cl_timeout = Cvar_Get( "cl_timeout", "200", 0 );
-diff --git a/code/qcommon/common.c b/code/qcommon/common.c
-index cceae657..afd9ed55 100644
---- a/code/qcommon/common.c
-+++ b/code/qcommon/common.c
-@@ -45,8 +45,8 @@ const int demo_protocols[] = { 66, 67, OLD_PROTOCOL_VERSION, NEW_PROTOCOL_VERSIO
- #define MIN_COMHUNKMEGS		48
- #define DEF_COMHUNKMEGS		56
- #else
--#define MIN_COMHUNKMEGS		64
--#define DEF_COMHUNKMEGS		128
-+#define MIN_COMHUNKMEGS		128
-+#define DEF_COMHUNKMEGS		512
- #endif
- 
- #ifdef USE_MULTI_SEGMENT
 diff --git a/code/qcommon/files.c b/code/qcommon/files.c
 index bdf47707..74e0164c 100644
 --- a/code/qcommon/files.c
@@ -171,16 +156,6 @@ index af9d9305..73978e31 100644
  	Cvar_SetDescription( sv_referencedPakNames, "Variable holds a list of all the pk3 files the server loaded data from." );
 +	sv_noReferencedPaks = Cvar_Get( "sv_noReferencedPaks", "1", CVAR_ARCHIVE_ND );
  
- 	// server vars
- 	sv_rconPassword = Cvar_Get ("rconPassword", "", CVAR_TEMP );
- 	Cvar_SetDescription( sv_rconPassword, "Password for remote server commands." );
- 	sv_privatePassword = Cvar_Get ("sv_privatePassword", "", CVAR_TEMP );
- 	Cvar_SetDescription( sv_privatePassword, "Set password for private clients to login with." );
--	sv_fps = Cvar_Get ("sv_fps", "20", CVAR_TEMP );
-+	sv_fps = Cvar_Get ("sv_fps", "125", CVAR_TEMP );
- 	Cvar_CheckRange( sv_fps, "10", "125", CV_INTEGER );
- 	Cvar_SetDescription( sv_fps, "Set the max frames per second the server sends the client." );
- 	sv_timeout = Cvar_Get( "sv_timeout", "200", CVAR_TEMP );
 @@ -800,7 +807,7 @@ void SV_Init( void )
  	Cvar_SetDescription( sv_banFile, "Name of the file that is used for storing the server bans." );
  #endif

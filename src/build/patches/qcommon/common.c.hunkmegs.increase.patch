@@ -1,0 +1,15 @@
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index 22756839..37b7e170 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -45,8 +45,8 @@ const int demo_protocols[] = { 66, 67, OLD_PROTOCOL_VERSION, NEW_PROTOCOL_VERSIO
+ #define MIN_COMHUNKMEGS		48
+ #define DEF_COMHUNKMEGS		56
+ #else
+-#define MIN_COMHUNKMEGS		64
+-#define DEF_COMHUNKMEGS		128
++#define MIN_COMHUNKMEGS		128
++#define DEF_COMHUNKMEGS		512
+ #endif
+ 
+ #ifdef USE_MULTI_SEGMENT
