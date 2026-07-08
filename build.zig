@@ -3,8 +3,6 @@
 //:_________________________________________________________________
 // @deps confy
 const confy   = @import("confy");
-const Name    = confy.Name;
-const git     = confy.git;
 // @deps builder
 const Engine  = @import("./src/build/engine.zig").Engine;
 
@@ -20,11 +18,7 @@ pub const publish    = distribute and false;  // Publish to the relevant platfor
 //______________________________________
 // @section Package Information
 //____________________________
-pub const pkg = confy.package.info(.{
-  .name   = Name{ .short= "oQ3", .long= "openquake3", .human= "OpenQuake3" },
-  .author = Name{ .short= "sOkam" },
-  .git    = git.Info{ .owner= "OpenQuake3", .repo= "engine", .host= "https://github.com" },
-});
+const cfg = @import("./src/build/cfg.zig");
 
 
 //______________________________________
@@ -33,7 +27,7 @@ pub const pkg = confy.package.info(.{
 pub fn main (P :confy.Process) !void {
   //__________________
   // Build Targets
-  var engine = try Engine.create(P, pkg, release);
+  var engine = try Engine.create(P, .{.release= release, .pkg= cfg.package});
   //__________________
   // Target System
   const systems =
@@ -41,9 +35,9 @@ pub fn main (P :confy.Process) !void {
     else            &.{confy.System.host()};
   //__________________
   // Order to Build
-  pkg.report();
+  cfg.package.report();
   try engine.buildFor(systems);
-  confy.echo(pkg.name.short++": Done building.");
+  confy.echo(cfg.package.name.short++": Done building.");
 }
 
 
