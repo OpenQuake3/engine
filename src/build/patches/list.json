@@ -38,5 +38,6 @@
   { "path": "server/sv_init.c.sv_pure.patch",                        "description": "Set sv_pure to 0 by default" },
   { "path": "server/sv_init.c.sv_fps.patch",                         "description": "Set sv_fps to 125 by default" },
 
+  { "path": "qcommon/q_math.c.colors.standarize.patch",              "description": "Standarize 0..9 colors with other defrag engines" },
   { "path": "client/cl_main.c.ranger.patch",                         "description": "Change default player model to ranger" }
 ]
