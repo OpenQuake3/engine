@@ -1,0 +1,30 @@
+diff --git a/code/asm/snd_mix_x86_64.s b/code/asm/snd_mix_x86_64.s
+index ecbdb99d..82527928 100644
+--- a/code/asm/snd_mix_x86_64.s
++++ b/code/asm/snd_mix_x86_64.s
+@@ -1,23 +1,13 @@
+-#if defined(__APPLE__)
+-#undef ELF
+-#endif
+-
+ #ifdef __ELF__
+ .section .note.GNU-stack,"",@progbits
+ #endif
+ 
+-#ifdef ELF
+-#define C(label) label
+-#else
+-#define C(label) _##label
+-#endif
+-
+ .intel_syntax noprefix
+ 
+ .text
+ 
+-.globl C(S_WriteLinearBlastStereo16_SSE_x64)
+-C(S_WriteLinearBlastStereo16_SSE_x64):
++.globl S_WriteLinearBlastStereo16_SSE_x64
++S_WriteLinearBlastStereo16_SSE_x64:
+ 	push rbx
+ #ifdef _WIN32
+ 	// RCX RDX R8 R9
