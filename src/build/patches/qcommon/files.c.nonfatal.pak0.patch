@@ -1,17 +1,8 @@
-From: sOkam <7308253+heysokam@users.noreply.github.com>
-Subject: [PATCH] No fatal error on modified baseq3, downgrade to warning
-
-No fatal error on modified baseq3, downgrade to warning
-
-Files: code/qcommon/files.c
-
-Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
----
 diff --git a/code/qcommon/files.c b/code/qcommon/files.c
-index bdf47707..74e0164c 100644
+index 60a326b7..61f42913 100644
 --- a/code/qcommon/files.c
 +++ b/code/qcommon/files.c
-@@ -4923,7 +4923,7 @@ static void FS_CheckIdPaks( void )
+@@ -4945,7 +4945,7 @@ static void FS_CheckIdPaks( void )
  				{
  					Com_Printf("\n\n"
  						"**************************************************\n"
@@ -20,7 +11,7 @@ index bdf47707..74e0164c 100644
  						"is not correct. Please re-copy pak0.pk3 from your\n"
  						"legitimate Q3 CDROM.\n"
  						"**************************************************\n\n\n",
-@@ -4933,13 +4933,12 @@ static void FS_CheckIdPaks( void )
+@@ -4955,13 +4955,12 @@ static void FS_CheckIdPaks( void )
  				{
  					Com_Printf("\n\n"
  						"**************************************************\n"
@@ -35,5 +26,3 @@ index bdf47707..74e0164c 100644
  			}
  
  			foundPak |= 1<<(pakBasename[3]-'0');
-
--- 

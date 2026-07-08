@@ -9,6 +9,7 @@
   { "path": "qcommon/q_shared.h.names.configurable.patch",       "description": "Allow configuring Version and DefaultGame from the buildsystem" },
   { "path": "client/cl_main.c.connection.protocol.prefix.patch", "description": "Automatic connection protocol prefix from DefaultGame define" },
 
+  { "path": "qcommon/files.c.nonfatal.pak0.patch",               "description": "Do not error on modified pak0 SHA checksum value. Report a warning instead." },
 
   { "path": "unix/unix_main.c.state.tty.patch",                  "description": "Change tty state visibility to public" },
   { "path": "qcommon/common.c.state.jmp.patch",                  "description": "Change abortframe visibility to public" },
