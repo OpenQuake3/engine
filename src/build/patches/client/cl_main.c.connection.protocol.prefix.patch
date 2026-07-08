@@ -1,0 +1,39 @@
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 32ced35e..39d606c3 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ // cl_main.c  -- client main loop
+ 
+ #include "client.h"
++#include "../qcommon/q_shared.h"
+ #include <limits.h>
+ 
+ cvar_t	*cl_noprint;
+@@ -1586,9 +1587,10 @@ static void CL_Connect_f( void ) {
+ 
+ 	server = buffer;
+ 
+-	// skip leading "q3a:/" in connection string
+-	if ( !Q_stricmpn( server, "q3a:/", 5 ) ) {
+-		server += 5;
++	// skip leading "DEFAULT_GAME:/" in connection string
++	const unsigned long protocol_len = strlen(PROTOCOL_PREFIX);
++	if ( !Q_stricmpn( server, PROTOCOL_PREFIX, protocol_len) ) {
++		server += protocol_len;
+ 	}
+ 
+ 	// skip all slash prefixes
+diff --git a/code/qcommon/q_shared.h b/code/qcommon/q_shared.h
+index 5f818a0a..0f745fdc 100644
+--- a/code/qcommon/q_shared.h
++++ b/code/qcommon/q_shared.h
+@@ -36,6 +36,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ 
+ //#define DEFAULT_GAME			"edawn"
+ 
++#define PROTOCOL_PREFIX DEFAULT_GAME ":/"
++
+ #define BASEGAME				"baseq3"
+ #define BASEDEMO				"demoq3"
+ #define BASETA					"missionpack"
