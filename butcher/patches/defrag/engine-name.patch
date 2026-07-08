@@ -1,0 +1,30 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Set engine name and default game to defrag
+
+Set engine name and default game to defrag
+
+Files: code/qcommon/q_shared.h
+
+Co-authored-by: mediumBeast <74370030+mediumBeast@users.noreply.github.com>
+---
+diff --git a/code/qcommon/q_shared.h b/code/qcommon/q_shared.h
+index 8eb3dccd..ca92dd0d 100644
+--- a/code/qcommon/q_shared.h
++++ b/code/qcommon/q_shared.h
+@@ -30,11 +30,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #ifndef SVN_VERSION
+   #define SVN_VERSION Q3_VERSION
+ #endif
+-#define CLIENT_WINDOW_TITLE   "Quake 3: Arena"
+-#define CONSOLE_WINDOW_TITLE  "Quake 3 Console"
++#define CLIENT_WINDOW_TITLE   "Open DeFRaG Engine"
++#define CONSOLE_WINDOW_TITLE  "Open DeFRaG Console"
+ // 1.32 released 7-10-2002
+ 
+-//#define DEFAULT_GAME			"edawn"
++#define DEFAULT_GAME			"defrag"
+ 
+ #define BASEGAME				"baseq3"
+ #define BASEDEMO				"demoq3"
+
+-- 

@@ -1,0 +1,194 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Defrag-specific default values (hunkmegs, sv_fps, snaps, motd, singleShader, steampath, noReferencedPaks)
+
+Defrag-specific default values (hunkmegs, sv_fps, snaps, motd, singleShader, steampath, noReferencedPaks)
+
+Files: code/client/cl_main.c, code/qcommon/common.c, code/qcommon/files.c, code/renderer/tr_init.c, code/renderer2/tr_init.c, code/renderervk/tr_init.c, code/server/sv_bot.c, code/server/sv_game.c, code/server/sv_init.c
+
+Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
+Co-authored-by: ec- <tweels@gmail.com>
+Co-authored-by: eugene <eugene@832414e2-6573-9c40-a513-caa1f8131539>
+---
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 9e23d282..e5a87a6d 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -3872,7 +3895,7 @@ void CL_Init( void ) {
+ 	//
+ 	cl_noprint = Cvar_Get( "cl_noprint", "0", 0 );
+ 	Cvar_SetDescription( cl_noprint, "Disable printing of information in the console." );
+-	cl_motd = Cvar_Get( "cl_motd", "1", 0 );
++	cl_motd = Cvar_Get( "cl_motd", "0", 0 );
+ 	Cvar_SetDescription( cl_motd, "Toggle the display of the 'Message of the day'. When Quake 3 Arena starts a map up, it sends the GL_RENDERER string to the Message Of The Day server at id. This responds back with a message of the day to the client." );
+ 
+ 	cl_timeout = Cvar_Get( "cl_timeout", "200", 0 );
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index cceae657..afd9ed55 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -45,8 +45,8 @@ const int demo_protocols[] = { 66, 67, OLD_PROTOCOL_VERSION, NEW_PROTOCOL_VERSIO
+ #define MIN_COMHUNKMEGS		48
+ #define DEF_COMHUNKMEGS		56
+ #else
+-#define MIN_COMHUNKMEGS		64
+-#define DEF_COMHUNKMEGS		128
++#define MIN_COMHUNKMEGS		128
++#define DEF_COMHUNKMEGS		512
+ #endif
+ 
+ #ifdef USE_MULTI_SEGMENT
+diff --git a/code/qcommon/files.c b/code/qcommon/files.c
+index bdf47707..74e0164c 100644
+--- a/code/qcommon/files.c
++++ b/code/qcommon/files.c
+@@ -4696,7 +4696,7 @@ static void FS_Startup( void ) {
+ 	Cvar_SetDescription( fs_basepath, "Write-protected CVAR specifying the path to the installation folder of the game." );
+ 	fs_basegame = Cvar_Get( "fs_basegame", BASEGAME, CVAR_INIT | CVAR_PROTECTED );
+ 	Cvar_SetDescription( fs_basegame, "Write-protected CVAR specifying the path to the base game(s) folder(s), separated by '/'." );
+-	fs_steampath = Cvar_Get( "fs_steampath", Sys_SteamPath(), CVAR_INIT | CVAR_PROTECTED | CVAR_PRIVATE );
++	fs_steampath = Cvar_Get( "fs_steampath", "", CVAR_INIT | CVAR_PROTECTED | CVAR_PRIVATE );
+ 
+ 	/* parse fs_basegame cvar */
+ 	if ( basegame_cnt == 0 || Q_stricmp( basegame, fs_basegame->string ) ) {
+diff --git a/code/renderer/tr_init.c b/code/renderer/tr_init.c
+index 3f0710d2..438d3fe3 100644
+--- a/code/renderer/tr_init.c
++++ b/code/renderer/tr_init.c
+@@ -1484,7 +1490,7 @@ static void R_Register( void )
+ 	r_intensity = ri.Cvar_Get( "r_intensity", "1", CVAR_ARCHIVE_ND | CVAR_LATCH );
+ 	ri.Cvar_CheckRange( r_intensity, "1", "255", CV_FLOAT );
+ 	ri.Cvar_SetDescription( r_intensity, "Global texture lighting scale." );
+-	r_singleShader = ri.Cvar_Get( "r_singleShader", "0", CVAR_CHEAT | CVAR_LATCH );
++	r_singleShader = ri.Cvar_Get( "r_singleShader", "0", CVAR_LATCH ); // CVAR_CHEAT
+ 	ri.Cvar_SetDescription( r_singleShader, "Debugging tool that only uses the default shader for all rendering." );
+ 	r_defaultImage = ri.Cvar_Get( "r_defaultImage", "", CVAR_ARCHIVE_ND | CVAR_LATCH );
+ 	ri.Cvar_SetDescription( r_defaultImage, "Replace default (missing) image texture by either exact file or solid #rgb|#rrggbb background color." );
+diff --git a/code/renderer2/tr_init.c b/code/renderer2/tr_init.c
+index b212997e..ceeb32fe 100644
+--- a/code/renderer2/tr_init.c
++++ b/code/renderer2/tr_init.c
+@@ -1250,7 +1250,7 @@ static void R_Register( void )
+ 	ri.Cvar_SetDescription( r_mapOverBrightBits, "Sets the number of overbright bits baked into all lightmaps and map data." );
+ 	r_intensity = ri.Cvar_Get ("r_intensity", "1", CVAR_LATCH );
+ 	ri.Cvar_SetDescription( r_intensity, "Global texture lighting scale." );
+-	r_singleShader = ri.Cvar_Get ("r_singleShader", "0", CVAR_CHEAT | CVAR_LATCH );
++	r_singleShader = ri.Cvar_Get( "r_singleShader", "0", CVAR_LATCH ); // CVAR_CHEAT
+ 	ri.Cvar_SetDescription( r_singleShader, "Debugging tool that only uses the default shader for all rendering." );
+ 
+ 	//
+diff --git a/code/renderervk/tr_init.c b/code/renderervk/tr_init.c
+index 9115d214..bb7a5ea6 100644
+--- a/code/renderervk/tr_init.c
++++ b/code/renderervk/tr_init.c
+@@ -1509,7 +1515,7 @@ static void R_Register( void )
+ 	r_intensity = ri.Cvar_Get( "r_intensity", "1", CVAR_ARCHIVE_ND | CVAR_LATCH );
+ 	ri.Cvar_CheckRange( r_intensity, "1", "255", CV_FLOAT );
+ 	ri.Cvar_SetDescription( r_intensity, "Global texture lighting scale." );
+-	r_singleShader = ri.Cvar_Get( "r_singleShader", "0", CVAR_CHEAT | CVAR_LATCH );
++	r_singleShader = ri.Cvar_Get( "r_singleShader", "0", CVAR_LATCH ); // CVAR_CHEAT
+ 	ri.Cvar_SetDescription( r_singleShader, "Debugging tool that only uses the default shader for all rendering." );
+ 	r_defaultImage = ri.Cvar_Get( "r_defaultImage", "", CVAR_ARCHIVE_ND | CVAR_LATCH );
+ 	ri.Cvar_SetDescription( r_defaultImage, "Replace default (missing) image texture by either exact file or solid #rgb|#rrggbb background color." );
+diff --git a/code/server/sv_bot.c b/code/server/sv_bot.c
+index 503de8d5..5a35d513 100644
+--- a/code/server/sv_bot.c
++++ b/code/server/sv_bot.c
+@@ -499,7 +499,7 @@ SV_BotInitCvars
+ */
+ void SV_BotInitCvars(void) {
+ 
+-	Cvar_Get("bot_enable", "1", 0);						//enable the bot
++	Cvar_Get("bot_enable", "0", 0);						//enable the bot
+ 	Cvar_Get("bot_developer", "0", CVAR_CHEAT);			//bot developer mode
+ 	Cvar_Get("bot_debug", "0", CVAR_CHEAT);				//enable bot debugging
+ 	Cvar_Get("bot_maxdebugpolys", "2", 0);				//maximum number of debug polys
+diff --git a/code/server/sv_game.c b/code/server/sv_game.c
+index c47f9a5a..fee50288 100644
+--- a/code/server/sv_game.c
++++ b/code/server/sv_game.c
+@@ -1078,7 +1078,7 @@ void SV_InitGameProgs( void ) {
+ 	//FIXME these are temp while I make bots run in vm
+ 	extern int	bot_enable;
+ 
+-	var = Cvar_Get( "bot_enable", "1", CVAR_LATCH );
++	var = Cvar_Get( "bot_enable", "0", CVAR_LATCH );
+ 	if ( var ) {
+ 		bot_enable = var->integer;
+ 	}
+diff --git a/code/server/sv_init.c b/code/server/sv_init.c
+index af9d9305..73978e31 100644
+--- a/code/server/sv_init.c
++++ b/code/server/sv_init.c
+@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ 
+ #include "server.h"
+ 
++cvar_t	*sv_noReferencedPaks;
+ 
+ /*
+ ===============
+@@ -616,20 +617,25 @@ void SV_SpawnServer( const char *mapname, qboolean killBots ) {
+ 	FS_TouchFileInPak( "vm/cgame.qvm" );
+ 	FS_TouchFileInPak( "vm/ui.qvm" );
+ 
+-	// the server sends these to the clients so they can figure
+-	// out which pk3s should be auto-downloaded
+-	p = FS_ReferencedPakNames();
+-	if ( FS_ExcludeReference() ) {
+-		// \fs_excludeReference may mask our current ui/cgame qvms
+-		FS_TouchFileInPak( "vm/cgame.qvm" );
+-		FS_TouchFileInPak( "vm/ui.qvm" );
+-		// rebuild referenced paks list
++	if (sv_noReferencedPaks->integer) {
++		Cvar_Set( "sv_referencedPakNames", "" );
++		Cvar_Set( "sv_referencedPaks", "" );
++	} else {
++		// the server sends these to the clients so they can figure
++		// out which pk3s should be auto-downloaded
+ 		p = FS_ReferencedPakNames();
+-	}
+-	Cvar_Set( "sv_referencedPakNames", p );
++		if ( FS_ExcludeReference() ) {
++			// \fs_excludeReference may mask our current ui/cgame qvms
++			FS_TouchFileInPak( "vm/cgame.qvm" );
++			FS_TouchFileInPak( "vm/ui.qvm" );
++			// rebuild referenced paks list
++			p = FS_ReferencedPakNames();
++		}
++		Cvar_Set( "sv_referencedPakNames", p );
+ 
+-	p = FS_ReferencedPakChecksums();
+-	Cvar_Set( "sv_referencedPaks", p );
++		p = FS_ReferencedPakChecksums();
++		Cvar_Set( "sv_referencedPaks", p );
++	}
+ 
+ 	Cvar_Set( "sv_paks", "" );
+ 	Cvar_Set( "sv_pakNames", "" ); // not used on client-side
+@@ -753,13 +759,14 @@ void SV_Init( void )
+ 	Cvar_Get( "sv_referencedPaks", "", CVAR_SYSTEMINFO | CVAR_ROM );
+ 	sv_referencedPakNames = Cvar_Get( "sv_referencedPakNames", "", CVAR_SYSTEMINFO | CVAR_ROM );
+ 	Cvar_SetDescription( sv_referencedPakNames, "Variable holds a list of all the pk3 files the server loaded data from." );
++	sv_noReferencedPaks = Cvar_Get( "sv_noReferencedPaks", "1", CVAR_ARCHIVE_ND );
+ 
+ 	// server vars
+ 	sv_rconPassword = Cvar_Get ("rconPassword", "", CVAR_TEMP );
+ 	Cvar_SetDescription( sv_rconPassword, "Password for remote server commands." );
+ 	sv_privatePassword = Cvar_Get ("sv_privatePassword", "", CVAR_TEMP );
+ 	Cvar_SetDescription( sv_privatePassword, "Set password for private clients to login with." );
+-	sv_fps = Cvar_Get ("sv_fps", "20", CVAR_TEMP );
++	sv_fps = Cvar_Get ("sv_fps", "125", CVAR_TEMP );
+ 	Cvar_CheckRange( sv_fps, "10", "125", CV_INTEGER );
+ 	Cvar_SetDescription( sv_fps, "Set the max frames per second the server sends the client." );
+ 	sv_timeout = Cvar_Get( "sv_timeout", "200", CVAR_TEMP );
+@@ -800,7 +807,7 @@ void SV_Init( void )
+ 	Cvar_SetDescription( sv_banFile, "Name of the file that is used for storing the server bans." );
+ #endif
+ 
+-	sv_levelTimeReset = Cvar_Get( "sv_levelTimeReset", "0", CVAR_ARCHIVE_ND );
++	sv_levelTimeReset = Cvar_Get( "sv_levelTimeReset", "1", CVAR_ARCHIVE_ND );
+ 	Cvar_SetDescription( sv_levelTimeReset, "Whether or not to reset leveltime after new map loads." );
+ 
+ 	sv_filter = Cvar_Get( "sv_filter", "filter.txt", CVAR_ARCHIVE );
+
+-- 

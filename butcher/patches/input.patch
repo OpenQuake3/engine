@@ -1,0 +1,67 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Input features (in_blockWinKey, in_useInGamePrintScrn)
+
+Input features (in_blockWinKey, in_useInGamePrintScrn)
+
+Files: code/win32/win_wndproc.c
+
+Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
+Co-authored-by: ec- <tweels@gmail.com>
+Co-authored-by: eugene <eugene@832414e2-6573-9c40-a513-caa1f8131539>
+Co-authored-by: runaos <runaos@gmail.com>
+---
+diff --git a/code/win32/win_wndproc.c b/code/win32/win_wndproc.c
+index 10cf0121..d86634bc 100644
+--- a/code/win32/win_wndproc.c
++++ b/code/win32/win_wndproc.c
+@@ -31,6 +31,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ //static UINT MSH_MOUSEWHEEL;
+ 
+ // Console variables that we need to access from this module
++cvar_t		*in_blockWinKey;
++cvar_t		*in_useInGamePrintScrn;
+ cvar_t		*in_forceCharset;
+ 
+ static HHOOK WinHook;
+@@ -47,24 +49,26 @@ static LRESULT CALLBACK WinKeyHook( int code, WPARAM wParam, LPARAM lParam )
+ 	{
+ 	case WM_KEYDOWN:
+ 	case WM_SYSKEYDOWN:
+-		if ( ( key->vkCode == VK_LWIN || key->vkCode == VK_RWIN ) && !(Key_GetCatcher() & KEYCATCH_CONSOLE) ) {
++		if ( ( key->vkCode == VK_LWIN || key->vkCode == VK_RWIN ) && !(Key_GetCatcher() & (KEYCATCH_CONSOLE | KEYCATCH_UI | KEYCATCH_MESSAGE)) && in_blockWinKey->integer ) {
+ 			Sys_QueEvent( 0, SE_KEY, K_SUPER, qtrue, 0, NULL );
+ 			return 1;
+ 		}
+-		if ( key->vkCode == VK_SNAPSHOT ) {
++		if ( key->vkCode == VK_SNAPSHOT && in_useInGamePrintScrn->integer ) {
+ 			Sys_QueEvent( 0, SE_KEY, K_PRINT, qtrue, 0, NULL );
+ 			return 1;
+ 		}
++		break;
+ 	case WM_KEYUP:
+ 	case WM_SYSKEYUP:
+-		if ( ( key->vkCode == VK_LWIN || key->vkCode == VK_RWIN ) && !(Key_GetCatcher() & KEYCATCH_CONSOLE) ) {
++		if ( ( key->vkCode == VK_LWIN || key->vkCode == VK_RWIN ) && !(Key_GetCatcher() & (KEYCATCH_CONSOLE | KEYCATCH_UI | KEYCATCH_MESSAGE)) && in_blockWinKey->integer ) {
+ 			Sys_QueEvent( 0, SE_KEY, K_SUPER, qfalse, 0, NULL );
+ 			return 1;
+ 		}
+-		if ( key->vkCode == VK_SNAPSHOT ) {
++		if ( key->vkCode == VK_SNAPSHOT && in_useInGamePrintScrn->integer ) {
+ 			Sys_QueEvent( 0, SE_KEY, K_PRINT, qfalse, 0, NULL );
+ 			return 1;
+ 		}
++		break;
+ 	}
+ 	return CallNextHookEx( NULL, code, wParam, lParam );
+ }
+@@ -605,6 +609,8 @@ LRESULT WINAPI MainWndProc( HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM lParam
+ 
+ 		//MSH_MOUSEWHEEL = RegisterWindowMessage( TEXT( "MSWHEEL_ROLLMSG" ) ); 
+ 
++		in_blockWinKey = Cvar_Get( "in_blockWinKey", "1", CVAR_ARCHIVE_ND );
++		in_useInGamePrintScrn = Cvar_Get( "in_useInGamePrintScrn", "1", CVAR_ARCHIVE_ND );
+ 		WIN_EnableHook(); // for PrintScreen and Win* keys
+ 
+ 		hWinEventHook = SetWinEventHook( EVENT_SYSTEM_SWITCHSTART, EVENT_SYSTEM_SWITCHSTART, NULL, WinEventProc,
+
+-- 

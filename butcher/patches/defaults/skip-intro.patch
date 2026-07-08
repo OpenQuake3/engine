@@ -1,0 +1,27 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Skip intro and id logo by default
+
+Skip intro and id logo by default
+
+Files: code/qcommon/common.c
+
+Co-authored-by: mediumBeast <74370030+mediumBeast@users.noreply.github.com>
+---
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index cceae657..afd9ed55 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -3922,9 +3922,9 @@ void Com_Init( char *commandLine ) {
+ 	Cvar_Get( "com_errorMessage", "", CVAR_ROM | CVAR_NORESTART );
+ 
+ #ifndef DEDICATED
+-	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE );
++	com_introPlayed = Cvar_Get( "com_introplayed", "1", CVAR_ARCHIVE );
+ 	Cvar_SetDescription( com_introPlayed, "Skips the introduction cinematic." );
+-	com_skipIdLogo  = Cvar_Get( "com_skipIdLogo", "0", CVAR_ARCHIVE );
++	com_skipIdLogo  = Cvar_Get( "com_skipIdLogo", "1", CVAR_ARCHIVE );
+ 	Cvar_SetDescription( com_skipIdLogo, "Skip playing Id Software logo cinematic at startup." );
+ #endif
+ 
+
+-- 

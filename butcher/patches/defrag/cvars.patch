@@ -1,0 +1,107 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Align cvars with other defrag engines (dl_source, dl_usebaseq3, allowDownload)
+
+Align cvars with other defrag engines (dl_source, dl_usebaseq3, allowDownload)
+
+Files: code/client/cl_main.c, code/client/client.h
+
+Co-authored-by: Eugene <tweels@gmail.com>
+Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
+Co-authored-by: KG7x <Cados7x@gmail.com>
+Co-authored-by: ec- <tweels@gmail.com>
+---
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 9e23d282..e5a87a6d 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -67,8 +67,8 @@ cvar_t	*cl_lanForcePackets;
+ 
+ cvar_t	*cl_guidServerUniq;
+ 
+-cvar_t	*cl_dlURL;
+-cvar_t	*cl_dlDirectory;
++cvar_t	*dl_source;
++cvar_t	*dl_usebaseq3;
+ 
+ cvar_t	*cl_reconnectArgs;
+ 
+@@ -3917,10 +3944,10 @@ void CL_Init( void ) {
+ 	rconAddress = Cvar_Get ("rconAddress", "", 0);
+ 	Cvar_SetDescription( rconAddress, "The IP address of the remote console you wish to connect to." );
+ 
+-	cl_allowDownload = Cvar_Get( "cl_allowDownload", "1", CVAR_ARCHIVE_ND );
++	cl_allowDownload = Cvar_Get( "cl_allowDownload", "0", CVAR_ARCHIVE_ND );
+ 	Cvar_SetDescription( cl_allowDownload, "Enables downloading of content needed in server. Valid bitmask flags:\n 1: Downloading enabled\n 2: Do not use HTTP/FTP downloads\n 4: Do not use UDP downloads" );
+ #ifdef USE_CURL
+-	cl_mapAutoDownload = Cvar_Get( "cl_mapAutoDownload", "0", CVAR_ARCHIVE_ND );
++	cl_mapAutoDownload = Cvar_Get( "cl_mapAutoDownload", "1", CVAR_ARCHIVE );
+ 	Cvar_SetDescription( cl_mapAutoDownload, "Automatic map download for play and demo playback (via automatic \\dlmap call)." );
+ #ifdef USE_CURL_DLOPEN
+ 	cl_cURLLib = Cvar_Get( "cl_cURLLib", DEFAULT_CURL_LIB, 0 );
+@@ -3961,22 +3986,22 @@ void CL_Init( void ) {
+ 	cl_guidServerUniq = Cvar_Get( "cl_guidServerUniq", "1", CVAR_ARCHIVE_ND );
+ 	Cvar_SetDescription( cl_guidServerUniq, "Makes cl_guid unique for each server." );
+ 
+-	cl_dlURL = Cvar_Get( "cl_dlURL", "http://ws.q3df.org/maps/download/%1", CVAR_ARCHIVE_ND );
+-	Cvar_SetDescription( cl_dlURL, "Cvar must point to download location." );
++	dl_source = Cvar_Get( "dl_source", "http://ws.q3df.org/maps/download/%m", CVAR_ARCHIVE );
++	Cvar_SetDescription( dl_source, "Cvar must point to download location." );
+ 
+-	cl_dlDirectory = Cvar_Get( "cl_dlDirectory", "0", CVAR_ARCHIVE_ND );
+-	Cvar_CheckRange( cl_dlDirectory, "0", "1", CV_INTEGER );
++	dl_usebaseq3 = Cvar_Get( "dl_usebaseq3", "0", CVAR_ARCHIVE_ND );
++	Cvar_CheckRange( dl_usebaseq3, "0", "1", CV_INTEGER );
+ 	s = va( "Save downloads initiated by \\dlmap and \\download commands in:\n"
+ 		" 0 - current game directory\n"
+ 		" 1 - basegame (%s) directory\n", FS_GetBaseGameDir() );
+-	Cvar_SetDescription( cl_dlDirectory, s );
++	Cvar_SetDescription( dl_usebaseq3, s );
+ 
+ 	cl_reconnectArgs = Cvar_Get( "cl_reconnectArgs", "", CVAR_ARCHIVE_ND | CVAR_NOTABCOMPLETE );
+ 
+ 	// userinfo
+ 	Cvar_Get ("name", "UnnamedPlayer", CVAR_USERINFO | CVAR_ARCHIVE_ND );
+ 	Cvar_Get ("rate", "25000", CVAR_USERINFO | CVAR_ARCHIVE );
+-	Cvar_Get ("snaps", "40", CVAR_USERINFO | CVAR_ARCHIVE );
++	Cvar_Get ("snaps", "125", CVAR_USERINFO | CVAR_ARCHIVE );
+ 	Cvar_Get ("model", "sarge", CVAR_USERINFO | CVAR_ARCHIVE_ND );
+ 	Cvar_Get ("headmodel", "sarge", CVAR_USERINFO | CVAR_ARCHIVE_ND );
+  	Cvar_Get ("team_model", "sarge", CVAR_USERINFO | CVAR_ARCHIVE_ND );
+@@ -5022,9 +5048,9 @@ qboolean CL_Download( const char *cmd, const char *pakname, qboolean autoDownloa
+ 	char name[MAX_CVAR_VALUE_STRING];
+ 	const char *s;
+ 
+-	if ( cl_dlURL->string[0] == '\0' )
++	if ( dl_source->string[0] == '\0' )
+ 	{
+-		Com_Printf( S_COLOR_YELLOW "cl_dlURL cvar is not set\n" );
++		Com_Printf( S_COLOR_YELLOW "dl_source cvar is not set\n" );
+ 		return qfalse;
+ 	}
+ 
+@@ -5057,7 +5083,7 @@ qboolean CL_Download( const char *cmd, const char *pakname, qboolean autoDownloa
+ 		}
+ 	}
+ 
+-	return Com_DL_Begin( &download, pakname, cl_dlURL->string, autoDownload );
++	return Com_DL_Begin( &download, pakname, dl_source->string, autoDownload );
+ }
+ 
+ 
+diff --git a/code/client/client.h b/code/client/client.h
+index e9e9dfc1..c3fe86da 100644
+--- a/code/client/client.h
++++ b/code/client/client.h
+@@ -403,9 +404,8 @@ extern	cvar_t	*cl_activeAction;
+ extern	cvar_t	*cl_allowDownload;
+ #ifdef USE_CURL
+ extern	cvar_t	*cl_mapAutoDownload;
+-extern	cvar_t	*cl_dlDirectory;
++extern	cvar_t	*dl_usebaseq3;
+ #endif
+-extern	cvar_t	*cl_conXOffset;
+ extern	cvar_t	*cl_conColor;
+ extern	cvar_t	*cl_inGameVideo;
+ 
+
+-- 

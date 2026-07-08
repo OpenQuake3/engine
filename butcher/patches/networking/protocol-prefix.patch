@@ -1,0 +1,28 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Change protocol prefix from q3a to defrag
+
+Change protocol prefix from q3a to defrag
+
+Files: code/client/cl_main.c
+
+Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
+---
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 9e23d282..e5a87a6d 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -1575,9 +1575,9 @@ static void CL_Connect_f( void ) {
+ 	Q_strncpyz( buffer, server, sizeof( buffer ) );
+ 	server = buffer;
+ 
+-	// skip leading "q3a:/" in connection string
+-	if ( !Q_stricmpn( server, "q3a:/", 5 ) ) {
+-		server += 5;
++	// skip leading "defrag:/" in connection string
++	if ( !Q_stricmpn( server, "defrag:/", 8 ) ) {
++		server += 8;
+ 	}
+ 
+ 	// skip all slash prefixes
+
+-- 

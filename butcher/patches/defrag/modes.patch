@@ -1,0 +1,65 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] devvq3/devcpm game mode commands and killBots
+
+devvq3/devcpm game mode commands and killBots
+
+Files: code/server/sv_ccmds.c
+
+Co-authored-by: Jelle <jelle.vandeweyer@scarlet.be>
+Co-authored-by: KG7x <Cados7x@gmail.com>
+Co-authored-by: ec- <tweels@gmail.com>
+---
+diff --git a/code/server/sv_ccmds.c b/code/server/sv_ccmds.c
+index 37cc7cc1..417df49d 100644
+--- a/code/server/sv_ccmds.c
++++ b/code/server/sv_ccmds.c
+@@ -194,11 +194,19 @@ static void SV_Map_f( void ) {
+ 		killBots = qtrue;
+ 	}
+ 	else {
+-		if ( !Q_stricmp( cmd, "devmap" ) ) {
++		if ( !Q_stricmpn( cmd, "dev", 3 ) ) {
+ 			cheat = qtrue;
+ 		} else {
+ 			cheat = qfalse;
+ 		}
++
++		if ( !Q_stricmp( cmd, "cpm" ) || !Q_stricmp( cmd, "devcpm" ) ) {
++			Cvar_Set( "df_promode", "1" );
++		}
++		else if ( !Q_stricmp( cmd, "vq3" ) || !Q_stricmp( cmd, "devvq3" ) ) {
++			Cvar_Set( "df_promode", "0" );
++		}
++
+ 		if( sv_gametype->integer == GT_SINGLE_PLAYER ) {
+ 			Cvar_SetIntegerValue( "g_gametype", GT_FFA );
+ 			killBots = qtrue;
+@@ -1561,17 +1569,25 @@ void SV_AddOperatorCommands( void ) {
+ 	Cmd_AddCommand ("map_restart", SV_MapRestart_f);
+ 	Cmd_AddCommand ("sectorlist", SV_SectorList_f);
+ 	Cmd_AddCommand ("map", SV_Map_f);
++	Cmd_AddCommand ("cpm", SV_Map_f);
++	Cmd_AddCommand ("vq3", SV_Map_f);
+ 	Cmd_SetCommandCompletionFunc( "map", SV_CompleteMapName );
++	Cmd_SetCommandCompletionFunc( "cpm", SV_CompleteMapName );
++	Cmd_SetCommandCompletionFunc( "vq3", SV_CompleteMapName );
+ #ifndef PRE_RELEASE_DEMO
+ 	Cmd_AddCommand ("devmap", SV_Map_f);
+ 	Cmd_SetCommandCompletionFunc( "devmap", SV_CompleteMapName );
++	Cmd_AddCommand ("devcpm", SV_Map_f);
++	Cmd_SetCommandCompletionFunc( "devcpm", SV_CompleteMapName );
++	Cmd_AddCommand ("devvq3", SV_Map_f);
++	Cmd_SetCommandCompletionFunc( "devvq3", SV_CompleteMapName );
+ 	Cmd_AddCommand ("spmap", SV_Map_f);
+ 	Cmd_SetCommandCompletionFunc( "spmap", SV_CompleteMapName );
+ 	Cmd_AddCommand ("spdevmap", SV_Map_f);
+ 	Cmd_SetCommandCompletionFunc( "spdevmap", SV_CompleteMapName );
+ #endif
+ 	Cmd_AddCommand ("killserver", SV_KillServer_f);
+-#ifdef USE_BANS	
++#ifdef USE_BANS
+ 	Cmd_AddCommand("rehashbans", SV_RehashBans_f);
+ 	Cmd_AddCommand("listbans", SV_ListBans_f);
+ 	Cmd_AddCommand("banaddr", SV_BanAddr_f);
+
+-- 
