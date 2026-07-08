@@ -1,8 +1,8 @@
 diff --git a/code/qcommon/q_shared.h b/code/qcommon/q_shared.h
-index 3227a519..eaf13b77 100644
+index 5f818a0a..a72f3467 100644
 --- a/code/qcommon/q_shared.h
 +++ b/code/qcommon/q_shared.h
-@@ -26,7 +26,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+@@ -26,15 +26,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  // q_shared.h -- included first by ALL program modules.
  // A user mod should never modify this file
  
@@ -12,12 +12,18 @@ index 3227a519..eaf13b77 100644
  #ifndef SVN_VERSION
    #define SVN_VERSION Q3_VERSION
  #endif
-@@ -34,7 +36,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- #define CONSOLE_WINDOW_TITLE  "Open DeFRaG Console"
+-#define CLIENT_WINDOW_TITLE   "Quake 3: Arena"
+-#define CONSOLE_WINDOW_TITLE  "Quake 3 Console"
++#if !defined(ENGINE_NAME)
++#define ENGINE_NAME           "Quake 3"
++#endif
++#define CLIENT_WINDOW_TITLE   ENGINE_NAME ": Arena"
++#define CONSOLE_WINDOW_TITLE  ENGINE_NAME " Console"
  // 1.32 released 7-10-2002
  
+ //#define DEFAULT_GAME			"edawn"
 +#if !defined(DEFAULT_GAME)
- #define DEFAULT_GAME			"defrag"
++#define DEFAULT_GAME			"baseq3"
 +#endif
  
  #define BASEGAME				"baseq3"
