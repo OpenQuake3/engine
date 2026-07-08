@@ -1,6 +1,6 @@
-[submodule "src/lib/idtech3"]
-	path = src/lib/idtech3
-	url = https://github.com/JBustos22/oDFe.git
 [submodule "src/lib/glfw"]
 	path = src/lib/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "src/lib/idtech3"]
+	path = src/lib/idtech3
+	url = https://github.com/ec-/Quake3e.git
