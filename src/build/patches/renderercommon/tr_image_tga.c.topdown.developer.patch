@@ -1,12 +1,3 @@
-From: sOkam <7308253+heysokam@users.noreply.github.com>
-Subject: [PATCH] Suppress top-down TGA warning in non-developer mode
-
-Suppress top-down TGA warning in non-developer mode
-
-Files: code/renderercommon/tr_image_tga.c
-
-Co-authored-by: mediumBeast <74370030+mediumBeast@users.noreply.github.com>
----
 diff --git a/code/renderercommon/tr_image_tga.c b/code/renderercommon/tr_image_tga.c
 index ae7e85ad..1560a141 100644
 --- a/code/renderercommon/tr_image_tga.c
@@ -20,5 +11,3 @@ index ae7e85ad..1560a141 100644
    }
  
    if (width)
-
--- 
