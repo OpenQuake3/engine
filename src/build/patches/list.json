@@ -12,6 +12,7 @@
   { "path": "qcommon/files.c.nonfatal.pak0.patch",                   "description": "Do not error on modified pak0 SHA checksum value. Report a warning instead." },
   { "path": "client/snd_dma.c.warning.developer.samplerate.patch",   "description": "Make non-22k sounds sample rate warning a developer warning instead." },
   { "path": "renderercommon/tr_image_tga.c.topdown.developer.patch", "description": "Make top-down warning message a developer warning instead." },
+  { "path": "renderer/tr_shader.c.imageless.stage.patch",            "description": "Make imageless shaders warning messages into a developer warning instead." },
 
   { "path": "unix/unix_main.c.state.tty.patch",                      "description": "Change tty state visibility to public" },
   { "path": "qcommon/common.c.state.jmp.patch",                      "description": "Change abortframe visibility to public" },

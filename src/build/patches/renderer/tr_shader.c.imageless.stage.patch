@@ -1,18 +1,9 @@
-From: sOkam <7308253+heysokam@users.noreply.github.com>
-Subject: [PATCH] Suppress shader 'stage with no image' warning in non-developer mode
-
-Suppress shader 'stage with no image' warning in non-developer mode
-
-Files: code/renderer/tr_shader.c, code/renderer2/tr_shader.c, code/renderervk/tr_shader.c
-
-Co-authored-by: mediumBeast <74370030+mediumBeast@users.noreply.github.com>
----
 diff --git a/code/renderer/tr_shader.c b/code/renderer/tr_shader.c
-index b6a3745f..1a4d9b82 100644
+index 46344a34..7da91fad 100644
 --- a/code/renderer/tr_shader.c
 +++ b/code/renderer/tr_shader.c
-@@ -2839,7 +2839,7 @@ static shader_t *FinishShader( void ) {
- 
+@@ -2854,7 +2854,7 @@ static shader_t *FinishShader( void ) {
+
  		// check for a missing texture
  		if ( pStage->bundle[0].image[0] == NULL ) {
 -			ri.Printf( PRINT_WARNING, "Shader %s has a stage with no image\n", shader.name );
@@ -21,11 +12,11 @@ index b6a3745f..1a4d9b82 100644
  			stage++;
  			continue;
 diff --git a/code/renderer2/tr_shader.c b/code/renderer2/tr_shader.c
-index 34c8cb9d..2edd81ee 100644
+index 34c8cb9d..5e1176a2 100644
 --- a/code/renderer2/tr_shader.c
 +++ b/code/renderer2/tr_shader.c
 @@ -3244,7 +3244,7 @@ static shader_t *FinishShader( void ) {
- 
+
  		// check for a missing texture
  		if ( !pStage->bundle[0].image[0] ) {
 -			ri.Printf( PRINT_WARNING, "Shader %s has a stage with no image\n", shader.name );
@@ -34,11 +25,11 @@ index 34c8cb9d..2edd81ee 100644
  			stage++;
  			continue;
 diff --git a/code/renderervk/tr_shader.c b/code/renderervk/tr_shader.c
-index d6b86a86..fcd9b15e 100644
+index 0660fe81..c19fac35 100644
 --- a/code/renderervk/tr_shader.c
 +++ b/code/renderervk/tr_shader.c
-@@ -3108,7 +3108,7 @@ static shader_t *FinishShader( void ) {
- 
+@@ -3123,7 +3123,7 @@ static shader_t *FinishShader( void ) {
+
  		// check for a missing texture
  		if ( pStage->bundle[0].image[0] == NULL ) {
 -			ri.Printf( PRINT_WARNING, "Shader %s has a stage with no image\n", shader.name );
@@ -46,5 +37,3 @@ index d6b86a86..fcd9b15e 100644
  			pStage->active = qfalse;
  			stage++;
  			continue;
-
--- 
