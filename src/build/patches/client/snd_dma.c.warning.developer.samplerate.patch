@@ -1,0 +1,13 @@
+diff --git a/code/client/snd_dma.c b/code/client/snd_dma.c
+index 25d94f74..ac2a304c 100644
+--- a/code/client/snd_dma.c
++++ b/code/client/snd_dma.c
+@@ -1306,7 +1306,7 @@ static void S_OpenBackgroundStream( const char *filename ) {
+ 	}
+ 
+ 	if( s_backgroundStream->info.channels != 2 || s_backgroundStream->info.rate != 22050 ) {
+-		Com_Printf(S_COLOR_YELLOW "WARNING: music file %s is not 22k stereo\n", filename );
++		Com_DPrintf(S_COLOR_YELLOW "WARNING: music file %s is not 22k stereo\n", filename );
+ 	}
+ }
+ 
