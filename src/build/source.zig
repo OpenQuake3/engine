@@ -9,7 +9,7 @@ const std = @import("std");
 // @deps buildsystem
 const confy  = @import("confy");
 const Engine = struct {
-  const dir  = @import("../cfg.zig").dir;
+  const dir  = @import("./cfg.zig").dir;
   const code = This;
 };
 

@@ -14,7 +14,7 @@ pub const idtech3 = struct {
 
 pub const info = @import("../../build.zig.zon");
 pub const name = struct {
-  pub const short = info.name;
+  pub const short = @tagName(info.name);
   pub const long  = "openquake3";
   pub const human = "OpenQuake3";
   pub const full  = confy.Name{.short= name.short, .long= name.long, .human= name.human};

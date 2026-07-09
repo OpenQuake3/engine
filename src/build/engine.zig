@@ -22,8 +22,8 @@ root    :confy.Path= ".",
 // @section Engine: Project Configuration
 //____________________________
 const config = @import("./cfg.zig");
-const flags  = @import("./engine/flags.zig");
-const code   = @import("./engine/source.zig");
+const flags  = @import("./flags.zig");
+const code   = @import("./source.zig");
 
 
 //______________________________________
