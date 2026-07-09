@@ -16,6 +16,8 @@ server  :confy.Target,
 setup   :confy.Confy,
 pkg     :confy.package.Info,
 root    :confy.Path= ".",
+release :bool      = true,
+game    :?confy.Name = null,
 
 
 //______________________________________
@@ -97,9 +99,11 @@ pub fn create (
   var result = Engine{
     .client = try Engine.target.client(P, confy.System.host(), cfg, arg),
     .server = try Engine.target.server(P, confy.System.host(), cfg, arg),
-    .setup  = setup,
-    .pkg    = arg.pkg,
-    .root   = arg.root,
+    .setup   = setup,
+    .pkg     = arg.pkg,
+    .root    = arg.root,
+    .release = arg.release,
+    .game    = arg.game,
   };
   //__________________
   // Pass down game name as DEFAULT_GAME define
@@ -132,6 +136,22 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
   if (!confy.dir.exists(wiggle_trg, P.io, .{}))
     try confy.dir.link(wiggle_src, wiggle_trg, P.io);
   for (patches.list.data()) |*patch| try patch.apply(.{.cwd= dir });
+  // 3. Symlink GL headers for macOS cross-compilation
+  {
+    const lib_dir = try confy.dir.absolute("./bin/.lib", P.io, P.arena.allocator(), .{});
+    const gl_links = [_][2]confy.Path{
+      .{"/usr/include/GL",  "OpenGL"},
+      .{"/usr/include/GL",  "GL"},
+      .{"/usr/include/KHR", "KHR"},
+    };
+    for (gl_links) |entry| {
+      const src = entry[0];
+      const name = entry[1];
+      const trg_rel = try confy.path.join(P.arena.allocator(), &.{"./bin/.lib", name});
+      if (confy.dir.exists(src, P.io, .{}) and !confy.dir.exists(trg_rel, P.io, .{}))
+        try confy.dir.link(src, try confy.path.join(P.arena.allocator(), &.{lib_dir, name}), P.io);
+    }
+  }
 }
 
 
@@ -157,19 +177,20 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       try confy.dir.copy_contents(engine_out, game_out, io, A, .{.kind= .files});
     } else {
       //__________________
-      var client         = try E.client.clone();
-      client.cfg.dir.sub = "";
-      client.system      = system;
+      var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{ .release = E.release, .game = E.game });
+      if (E.game) |game| try client.flags.add_one(
+        (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
       try client.build();
       //__________________
-      var server         = try E.server.clone();
-      server.cfg.dir.sub = "";
-      server.system      = system;
+      var server = try Engine.target.server(E.setup.P, system, E.server.cfg, .{ .release = E.release, .game = E.game });
+      if (E.game) |game| try server.flags.add_one(
+        (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
       try server.build();
       //__________________
       // Copy engine binaries into game output
       const engine_out = try client.out_dir();
       const game_out   = try confy.path.join(A, &.{prev, engine_out});
+      try confy.dir.create(game_out, io, .{});
       try confy.dir.copy_contents(engine_out, game_out, io, A, .{.kind= .files});
     }
   }

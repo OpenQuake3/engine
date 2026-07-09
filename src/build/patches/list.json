@@ -1,11 +1,9 @@
 [
-  { "path": "client/snd_mix_x86_64.s.sse_underscore.patch",          "description": "Remove C() underscore macro from SSE asm symbol", "git": true },
   { "path": "client/snd_mix_x86_64.s.rename.patch",                  "description": "Rename .s to .S for clang preprocessor compatibility", "git": true },
 
   { "path": "unix/unix_main.c.lib.patch",                            "description": "Allow compilation as a static library" },
 
   { "path": "client/snd_mix.c.simd.patch",                           "description": "Allow SIMD sound configuration from the buildsystem" },
-  { "path": "client/snd_mix.c.sse_underscore.patch",                 "description": "Remove leading underscore from SSE function for clang compatibility" },
   { "path": "qcommon/q_shared.h.names.configurable.patch",           "description": "Allow configuring Version and DefaultGame from the buildsystem" },
   { "path": "client/cl_main.c.connection.protocol.prefix.patch",     "description": "Automatic connection protocol prefix from DefaultGame define" },
 

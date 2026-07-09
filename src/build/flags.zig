@@ -21,7 +21,7 @@ const base = flags.all;
 //____________________________
 const optimization = struct {
   const debug   = &[_]confy.cstring{ "-g", "-O0", "-DDEBUG", "-D_DEBUG" };
-  const release = &[_]confy.cstring{ "-O2", "-flto", "-DNDEBUG", }; // TODO: Release optimization flags
+  const release = &[_]confy.cstring{ "-O2", "-DNDEBUG", }; // Note: -flto did not work for windows cross-compilation
 };
 
 
@@ -30,13 +30,8 @@ const optimization = struct {
 //____________________________
 const platform = struct {
   const shared = &[_]confy.cstring{
+    "-DUSE_LOCAL_HEADERS=1",
     "-fvisibility=hidden",
-    "-ldl",
-  };
-  //__________________
-  const gnu = &[_]confy.cstring{
-    "-D_GNU_SOURCE",
-    "-Wl,--gc-sections",
   };
   //__________________
   const unix = &[_]confy.cstring{
@@ -44,8 +39,11 @@ const platform = struct {
   };
   //__________________
   const linux = &[_]confy.cstring{
+    "-D_GNU_SOURCE",
+    "-Wl,--gc-sections",
     "-DUSE_ICON",
     "-lm",
+    "-ldl",
     "-Wl,--hash-style=both",
   };
   //__________________
@@ -56,10 +54,8 @@ const platform = struct {
   const win32 = &[_]confy.cstring{
     "-DUSE_ICON",
     "-DMINGW=1",
-    "-DCURL_STATICLIB",
-    "-DPCRE2_STATIC",
-    "-DUSE_LOCAL_HEADERS=1",
     "-ffunction-sections",
+    "-Wl,--gc-sections",
     "-mwindows",
     "-Wl,--dynamicbase",
     "-Wl,--nxcompat",
@@ -92,9 +88,9 @@ pub const server = struct {
   };
   //__________________
   const os = struct {
-    const linux = platform.unix  ++ platform.linux ++ platform.gnu;
+    const linux = platform.unix  ++ platform.linux;
     const macos = platform.unix  ++ platform.macos;
-    const win32 = platform.win32 ++ platform.gnu;
+    const win32 = platform.win32;
   };
   //__________________
   const debug = struct {
@@ -123,7 +119,6 @@ pub const server = struct {
 // @section Engine Flags: Client
 //____________________________
 pub const client = struct {
-  const This = @This();
   //__________________
   const shared = flags.base ++ platform.shared ++ names ++ &[_]confy.cstring{
     // Warnings/Errors
@@ -134,61 +129,54 @@ pub const client = struct {
     // "-Wno-unused-result",
     // Defines
     "-DUSE_CURL",
-    "-DUSE_PCRE2",
+    "-DUSE_CURL_DLOPEN",
     "-DUSE_OPENGL_API",
     "-DUSE_OGG_VORBIS",
     // Includes
+    "-I./bin/.lib/idtech3/code/libsdl/include/SDL2",
+    "-I./bin/.lib/idtech3/code/libcurl/windows/include",
     "-I./bin/.lib/idtech3/code/libogg/include",
     "-I./bin/.lib/idtech3/code/libvorbis/include",
     "-I./bin/.lib/idtech3/code/libvorbis/lib",
+    // Assembly
+    "-DELF",
     // Exceptions
     "-fno-fast-math",       // NOTE: Only for vm_* files, but we add it for all
     "-DBOTLIB",             // NOTE: Only for botlib/* files, but we add it for all
-    // Linker Flags
-    "-lSDL2",
-    "-lpcre2-8",
-  };
-  //__________________
-  const unix = &[_]confy.cstring{
-    "-DUSE_CURL_DLOPEN",
   };
   //__________________
   const linux = &[_]confy.cstring{
-    // "-I/usr/include",
     "-I/usr/local/include",
-    "-I/usr/include/SDL2",
     "-rdynamic",
+    "-lSDL2",
   };
   //__________________
   const macos = &[_]confy.cstring{
-    "-I/Library/Frameworks/SDL2.framework/Headers",
-    "-F/Library/Frameworks",
-    "-framework", "SDL2",
+    "./bin/.lib/idtech3/code/libsdl/macosx/libSDL2-2.0.0.dylib",
   };
   //__________________
   const win32 = &[_]confy.cstring{
-    "-lcurl",
-    "-lz",
-    "-lcrypt32",
+    "-L./bin/.lib/idtech3/code/libsdl/windows/mingw/lib64",
+    "-lSDL264",
   };
   //__________________
   const os = struct {
-    const linux = platform.unix  ++ This.unix ++ platform.linux ++ platform.gnu ++ This.linux;
-    const macos = platform.unix  ++ This.unix ++ platform.macos ++ This.macos;
-    const win32 = platform.win32 ++ platform.gnu ++ This.win32;
+    const linux = platform.unix  ++ platform.linux ++ client.linux;
+    const macos = platform.unix  ++ platform.macos ++ client.macos;
+    const win32 = platform.win32 ++ client.win32;
   };
   //__________________
   const debug = struct {
-    const linux = This.shared ++ optimization.debug ++ os.linux;
-    const macos = This.shared ++ optimization.debug ++ os.macos;
-    const win32 = This.shared ++ optimization.debug ++ os.win32;
-    const other = This.shared ++ optimization.debug;
+    const linux = client.shared ++ optimization.debug ++ os.linux;
+    const macos = client.shared ++ optimization.debug ++ os.macos;
+    const win32 = client.shared ++ optimization.debug ++ os.win32;
+    const other = client.shared ++ optimization.debug;
   };
   const rel = struct {
-    const linux = This.shared ++ optimization.release ++ os.linux;
-    const macos = This.shared ++ optimization.release ++ os.macos;
-    const win32 = This.shared ++ optimization.release ++ os.win32;
-    const other = This.shared ++ optimization.release;
+    const linux = client.shared ++ optimization.release ++ os.linux;
+    const macos = client.shared ++ optimization.release ++ os.macos;
+    const win32 = client.shared ++ optimization.release ++ os.win32;
+    const other = client.shared ++ optimization.release;
   };
   //__________________
   pub fn all (system :confy.System, release :bool) confy.cstring_List { return switch (system.os) {
@@ -238,6 +226,7 @@ const unsafe = &[_]confy.cstring{
   "-Wno-missing-field-initializers",
   "-Wno-missing-variable-declarations",
   "-Wno-missing-noreturn",
+  "-Wno-incompatible-pointer-types",
   "-Wno-incompatible-pointer-types-discards-qualifiers",
   "-Wno-unreachable-code",
   "-Wno-unreachable-code-loop-increment",
@@ -254,6 +243,7 @@ const unsafe = &[_]confy.cstring{
   "-Wno-padded",
   "-Wno-format",
   "-Wno-format-nonliteral",
+  "-Wno-format-non-iso",
   "-Wno-comma",
   "-Wno-extra-semi",
   "-Wno-extra-semi-stmt",
