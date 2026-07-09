@@ -77,6 +77,7 @@ pub const create_args = struct {
   root     :confy.Path         = ".",
   release  :bool               = true,
   verbose  :bool               = false,
+  game     :?confy.Name        = null,
 };
 //__________________
 pub fn create (
@@ -93,13 +94,20 @@ pub fn create (
   const prev = try setup.currentPath(arg.root);
   //__________________
   // Create the Targets
-  const result = Engine{
+  var result = Engine{
     .client = try Engine.target.client(P, confy.System.host(), cfg, arg),
     .server = try Engine.target.server(P, confy.System.host(), cfg, arg),
     .setup  = setup,
     .pkg    = arg.pkg,
     .root   = arg.root,
   };
+  //__________________
+  // Pass down game name as DEFAULT_GAME define
+  if (arg.game) |game| {
+    const default_game = try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, P.arena.allocator());
+    try result.client.flags.add_one(default_game.data());
+    try result.server.flags.add_one(default_game.data());
+  }
   //__________________
   _ = try setup.currentPath(prev);
   return result;
