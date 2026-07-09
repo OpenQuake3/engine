@@ -40,6 +40,8 @@
 
   { "path": "qcommon/common.c.hunkmegs.increase.patch",              "description": "Increase default hunkmegs range to 128..512" },
 
+  { "path": "client/cl_console.c.color_theme.patch",                 "description": "Console color theme: orange separator/arrows, dark gray background" },
+
   { "path": "qcommon/q_math.c.colors.standarize.patch",              "description": "Standarize 0..9 colors with other defrag engines" },
   { "path": "client/cl_main.c.ranger.patch",                         "description": "Change default player model to ranger" }
 ]
