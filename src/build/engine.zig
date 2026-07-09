@@ -168,14 +168,14 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
   try Engine.requirements(E.setup.P, E.pkg);
   //__________________
   for (systems) |system| {
+    const out_dir = try confy.path.join(A, &.{prev, "bin", try system.zig_triple(A)});
+    try confy.dir.create(out_dir, io, .{});
     if (system.eq(confy.System.host())) {
       try E.client.build();
       try E.server.build();
       //__________________
-      // Copy engine binaries into game output
-      const engine_out = try E.client.out_dir();
-      const game_out   = try confy.path.join(E.setup.P.arena.allocator(), &.{prev, engine_out});
-      try confy.dir.copy_contents(engine_out, game_out, io, A, .{.kind= .files});
+      // Copy engine binaries into output
+      try confy.dir.copy_contents(try E.client.out_dir(), out_dir, io, A, .{.kind= .files});
     } else {
       //__________________
       var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{ .release = E.release, .game = E.game });
@@ -188,11 +188,8 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
         (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
       try server.build();
       //__________________
-      // Copy engine binaries into game output
-      const engine_out = try client.out_dir();
-      const game_out   = try confy.path.join(A, &.{prev, engine_out});
-      try confy.dir.create(game_out, io, .{});
-      try confy.dir.copy_contents(engine_out, game_out, io, A, .{.kind= .files});
+      // Copy engine binaries into output
+      try confy.dir.copy_contents(try client.out_dir(), out_dir, io, A, .{.kind= .files});
     }
   }
   _ = try E.setup.currentPath(prev);
