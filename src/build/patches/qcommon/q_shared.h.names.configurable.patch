@@ -1,8 +1,8 @@
 diff --git a/code/qcommon/q_shared.h b/code/qcommon/q_shared.h
-index 5f818a0a..a72f3467 100644
+index 5f818a0a..00d69def 100644
 --- a/code/qcommon/q_shared.h
 +++ b/code/qcommon/q_shared.h
-@@ -26,15 +26,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+@@ -26,29 +26,53 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  // q_shared.h -- included first by ALL program modules.
  // A user mod should never modify this file
  
@@ -26,5 +26,35 @@ index 5f818a0a..a72f3467 100644
 +#define DEFAULT_GAME			"baseq3"
 +#endif
  
++#if !defined(BASEGAME)
  #define BASEGAME				"baseq3"
++#endif
++#if !defined(BASEDEMO)
  #define BASEDEMO				"demoq3"
++#endif
++#if !defined(BASETA)
+ #define BASETA					"missionpack"
++#endif
++#if !defined(STEAMPATH_NAME)
+ #define STEAMPATH_NAME			"Quake 3 Arena"
++#endif
++#if !defined(STEAMPATH_APPID)
+ #define STEAMPATH_APPID			"2200"
++#endif
+ 
+ #define MAX_TEAMNAME            32
+ #define MAX_MASTER_SERVERS      5	// number of supported master servers
+ 
++#if !defined(GAMENAME_FOR_MASTER)
+ #define GAMENAME_FOR_MASTER		"Quake3Arena"
++#endif
++#if !defined(HEARTBEAT_FOR_MASTER)
+ #define HEARTBEAT_FOR_MASTER	"QuakeArena-1"
++#endif
+ 
++#if !defined(DEMOEXT)
+ #define DEMOEXT	"dm_"			// standard demo extension
++#endif
+ 
+ #ifdef _MSC_VER
+ 
