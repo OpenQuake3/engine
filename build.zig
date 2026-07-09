@@ -10,7 +10,7 @@ const Engine  = @import("./src/build/engine.zig").Engine;
 //______________________________________
 // @section Configuration Options
 //____________________________
-pub const release    = false;                 // Whether we are building a release or debug version
+pub const release    = true;                  // Whether we are building a release or debug version
 pub const distribute = release    and false;  // Prepare the output for distribution (manual or automated) when true
 pub const publish    = distribute and false;  // Publish to the relevant platforms when true
 
