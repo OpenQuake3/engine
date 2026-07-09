@@ -176,6 +176,9 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       //__________________
       // Copy engine binaries into output
       try confy.dir.copy_contents(try E.client.out_dir(), out_dir, io, A, .{.kind= .files});
+      // Cleanup Windows build noise
+      if (system.os == .windows) try confy.dir.remove_extensions(
+        out_dir, &.{".pdb", ".lib"}, io, A, .{});
     } else {
       //__________________
       var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{ .release = E.release, .game = E.game });
@@ -190,6 +193,9 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       //__________________
       // Copy engine binaries into output
       try confy.dir.copy_contents(try client.out_dir(), out_dir, io, A, .{.kind= .files});
+      // Cleanup Windows build noise
+      if (system.os == .windows) try confy.dir.remove_extensions(
+        out_dir, &.{".pdb", ".lib"}, io, A, .{});
     }
   }
   _ = try E.setup.currentPath(prev);
