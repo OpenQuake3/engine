@@ -121,9 +121,11 @@ pub fn create (
 // @section Engine: Requirements
 //____________________________
 fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
+  //__________________
   // 1. Init/update the submodule
   if (!confy.dir.exists(Engine.config.idtech3.dir, P.io, .{}))
     try confy.git.submodule.update(Engine.config.idtech3.dir, P.io, P.arena.allocator(), .{});
+  //__________________
   // 2. Reset submodule to clean state and apply patches
   const dir        = try confy.dir.absolute(Engine.config.idtech3.dir, P.io, P.arena.allocator(), .{});
   try confy.git.checkout.run(".", P.io, P.arena.allocator(), .{.cwd= dir});
@@ -136,21 +138,20 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
   if (!confy.dir.exists(wiggle_trg, P.io, .{}))
     try confy.dir.link(wiggle_src, wiggle_trg, P.io);
   for (patches.list.data()) |*patch| try patch.apply(.{.cwd= dir });
+  //__________________
   // 3. Symlink GL headers for macOS cross-compilation
-  {
-    const lib_dir = try confy.dir.absolute("./bin/.lib", P.io, P.arena.allocator(), .{});
-    const gl_links = [_][2]confy.Path{
-      .{"/usr/include/GL",  "OpenGL"},
-      .{"/usr/include/GL",  "GL"},
-      .{"/usr/include/KHR", "KHR"},
-    };
-    for (gl_links) |entry| {
-      const src = entry[0];
-      const name = entry[1];
-      const trg_rel = try confy.path.join(P.arena.allocator(), &.{"./bin/.lib", name});
-      if (confy.dir.exists(src, P.io, .{}) and !confy.dir.exists(trg_rel, P.io, .{}))
-        try confy.dir.link(src, try confy.path.join(P.arena.allocator(), &.{lib_dir, name}), P.io);
-    }
+  const lib_dir  = try confy.dir.absolute("./bin/.lib", P.io, P.arena.allocator(), .{});
+  const gl_links = [_][2]confy.Path{
+    .{"/usr/include/GL",  "OpenGL"},
+    .{"/usr/include/GL",  "GL"},
+    .{"/usr/include/KHR", "KHR"},
+  };
+  for (gl_links) |entry| {
+    const src     = entry[0];
+    const name    = entry[1];
+    const trg_rel = try confy.path.join(P.arena.allocator(), &.{"./bin/.lib", name});
+    if (confy.dir.exists(src, P.io, .{}) and !confy.dir.exists(trg_rel, P.io, .{}))
+      try confy.dir.link(src, try confy.path.join(P.arena.allocator(), &.{lib_dir, name}), P.io);
   }
 }
 
