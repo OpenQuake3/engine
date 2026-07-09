@@ -1,14 +1,18 @@
-//:_________________________________________________________________
-//  osdf  |  Copyright (C) Ivan Mar (sOkam!)  |  GPL-3.0-or-later  :
-//:_________________________________________________________________
+//:________________________________________________________________
+//  oQ3  |  Copyright (C) Ivan Mar (sOkam!)  |  GPL-3.0-or-later  :
+//:________________________________________________________________
 pub const flags = @This();
+// @deps std
+const std = @import("std");
 // @deps buildsystem
 const confy = @import("confy");
+// @deps config
+const cfg = @import("../cfg.zig");
 
 //______________________________________
 // @section Flag Aliases
 //____________________________
-const base   = @import("../flags.zig").all;
+const base = @import("../flags.zig").all;
 
 
 //______________________________________
@@ -16,11 +20,7 @@ const base   = @import("../flags.zig").all;
 //____________________________
 const optimization = struct {
   const debug   = &[_]confy.cstring{ "-g", "-O0", "-DDEBUG", "-D_DEBUG" };
-  const release = &[_]confy.cstring{ // TODO: Release optimization flags
-    "-O2",
-    "-flto",
-    "-DNDEBUG",
-  };
+  const release = &[_]confy.cstring{ "-O2", "-flto", "-DNDEBUG", }; // TODO: Release optimization flags
 };
 
 
@@ -76,8 +76,13 @@ const platform = struct {
 //______________________________________
 // @section Engine Flags: Server
 //____________________________
+const names = &[_]confy.cstring{
+  std.fmt.comptimePrint("-DQ3_VERSION=\"{s} {s}\"", .{cfg.name.human, cfg.info.version}),
+  std.fmt.comptimePrint("-DENGINE_NAME=\"{s}\"",    .{cfg.name.human}),
+};
+
 pub const server = struct {
-  const shared = flags.base ++ platform.shared ++ [_]confy.cstring{
+  const shared = flags.base ++ platform.shared ++ flags.names ++ [_]confy.cstring{
     // Defines
     "-DDEDICATED",
     "-DBOTLIB",
@@ -119,7 +124,7 @@ pub const server = struct {
 pub const client = struct {
   const This = @This();
   //__________________
-  const shared = flags.base ++ platform.shared ++ &[_]confy.cstring{
+  const shared = flags.base ++ platform.shared ++ names ++ &[_]confy.cstring{
     // Warnings/Errors
     // "-MMD",
     // "-Wall",

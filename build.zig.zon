@@ -1,0 +1,8 @@
+.{
+    .name = .oQ3,
+    .version = "1.40.0",
+    .license = "GPL-3.0-or-later",
+    .minimum_zig_version = "0.16.0",
+    .paths = .{""},
+    .fingerprint = 0xe8a81a8dc027a7ac,
+}
