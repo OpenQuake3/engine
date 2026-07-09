@@ -1,0 +1,142 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Console timestamps (HH:MM:SS prefix on each line)
+
+Add con_timestamp cvar (default 1) that prepends HH:MM:SS to every console line.
+Timestamps are rendered in color index 9 (light blue-gray) and excluded from
+notification overlay text.
+
+Adds prefix[9] and date[11] fields to console_t struct,
+Con_UpdateDateTime helper, and Con_Prefix to write timestamp into line buffer.
+Modifies Con_NewLine to call Con_Prefix after advancing lines.
+
+Files: code/client/cl_console.c
+
+---
+diff --git a/code/client/cl_console.c b/code/client/cl_console.c
+index 65f6242b..00000003 100644
+--- a/code/client/cl_console.c
++++ b/code/client/cl_console.c
+@@ -58,10 +58,13 @@ typedef struct {
+ 	vec4_t	color;
+
+ 	int		viswidth;
+-	int		vispage;
++	int		vispage;
+
+ 	qboolean newline;
+
++	char prefix[9];			// fixed width prefix, hh:mm:ss
++	char date[11];			// fixed width date, YYYY-MM-DD
+ } console_t;
+
+ extern  qboolean    chat_team;
+@@ -69,7 +72,9 @@ extern  int         chat_playerNum;
+
+ console_t	con;
+
++cvar_t		*con_timestamp;
+ cvar_t		*con_conspeed;
+ cvar_t		*con_autoclear;
+ cvar_t		*con_notifytime;
+ cvar_t		*con_scale;
+@@ -386,12 +391,34 @@ static void Cmd_CompleteTxtName(const char *args, int argNum ) {
+ }
+
+
++/*
++===============
++Con_UpdateDateTime
++===============
++*/
++static void Con_UpdateDateTime( void )
++{
++	qtime_t	now;
++
++	Com_RealTime( &now );
++	assert( sizeof(con.prefix) == 9 );
++	Com_sprintf( con.prefix, sizeof(con.prefix), "%02d:%02d:%02d", now.tm_hour, now.tm_min, now.tm_sec );
++	assert( sizeof(con.date) == 11 );
++	Com_sprintf( con.date, sizeof(con.date), "%04d-%02d-%02d", 1900 + now.tm_year, 1 + now.tm_mon, now.tm_mday );
++}
++
++
+ /*
+ ================
+ Con_Init
+ ================
+ */
+-void Con_Init( void )
++void Con_Init( void )
+ {
++	con_timestamp = Cvar_Get( "con_timestamp", "1", CVAR_ARCHIVE );
+ 	con_notifytime = Cvar_Get( "con_notifytime", "3", 0 );
+ 	Cvar_SetDescription( con_notifytime, "Defines how long messages (from players or the system) are on the screen (in seconds)." );
++
++	Con_UpdateDateTime();
++
+
+@@ -461,7 +488,28 @@ static void Con_Fixup( void )
+
+ /*
+ ===============
+-Con_Linefeed
++Con_Prefix
++===============
++*/
++static void Con_Prefix( void )
++{
++	assert( con.x == 0 );
++
++	if ( con_timestamp && con_timestamp->integer ) {
++		Con_UpdateDateTime();
++		assert( strlen(con.prefix) == sizeof(con.prefix) - 1 );
++		con.x = sizeof(con.prefix); // prefix + ' '
++		short *s = &con.text[ ( con.current % con.totallines ) * con.linewidth ];
++		for ( int i = 0; i < sizeof(con.prefix) - 1; ++i )
++			*s++ = (9<<8) | con.prefix[i];
++		*s++ = (ColorIndex(COLOR_WHITE)<<8) | ' ';
++	}
++}
++
++
++/*
++===============
++Con_NewLine
+
+ Move to newline only when we _really_ need this
+ ===============
+@@ -471,15 +519,20 @@ static void Con_NewLine( void )
+ 	short *s;
+ 	int i;
+
++	assert( con.newline == qtrue );
++	assert( con.x == 0 );
++
+ 	// follow last line
+ 	if ( con.display == con.current )
+ 		con.display++;
+ 	con.current++;
+
+-	s = &con.text[ ( con.current % con.totallines ) * con.linewidth ];
+-	for ( i = 0; i < con.linewidth ; i++ )
++	Con_Prefix();
++
++	s = &con.text[ ( con.current % con.totallines ) * con.linewidth + con.x];
++	for ( i = con.x; i < con.linewidth ; i++ )
+ 		*s++ = (ColorIndex(COLOR_WHITE)<<8) | ' ';
++}
+
+-	con.x = 0;
+ }
+
+@@ -686,7 +739,7 @@ static void Con_DrawNotify( void )
+ 			continue;
+ 		}
+
+-		for (x = 0 ; x < con.linewidth ; x++) {
++		for (x = con_timestamp->integer ? sizeof(con.prefix) : 0; x < con.linewidth ; x++) {
+ 			if ( ( text[x] & 0xff ) == ' ' ) {
+ 				continue;
+ 			}
+
+--

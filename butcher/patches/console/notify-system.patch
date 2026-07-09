@@ -1,0 +1,127 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Configurable notification system
+
+- Bump NUM_CON_TIMES from 4 to 64 (max visible notify lines)
+- Add con_notifyLines cvar (default 3): number of notification lines shown
+- Add con_notifyX/con_notifyY cvars: notification position offset
+- Add con_notifyKeep cvar: keep notifications visible when toggling console
+- Add con_notifyTime -1 support for permanent notifications
+- Add clearnotify command
+- Replace cl_conXOffset usage with con_notifyX in DrawNotify
+- Use lowercase smallchar_width instead of SMALLCHAR_WIDTH macro in chat draw
+
+Files: code/client/cl_console.c
+
+---
+diff --git a/code/client/cl_console.c b/code/client/cl_console.c
+index 65f6242b..00000005 100644
+--- a/code/client/cl_console.c
++++ b/code/client/cl_console.c
+@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #define  DEFAULT_CONSOLE_WIDTH 78
+ #define  MAX_CONSOLE_WIDTH 120
+
+-#define  NUM_CON_TIMES  4
++#define  NUM_CON_TIMES  64
+
+ #define  CON_TEXTSIZE   65536
+
+@@ -69,7 +69,11 @@ console_t	con;
+
+ cvar_t		*con_conspeed;
+ cvar_t		*con_autoclear;
+ cvar_t		*con_notifytime;
++cvar_t		*con_notifylines;
++cvar_t		*con_notifyx;
++cvar_t		*con_notifyy;
++cvar_t		*con_notifykeep;
+ cvar_t		*con_scale;
+
+@@ -91,7 +95,11 @@ void Con_ToggleConsole_f( void ) {
+
+ 	g_consoleField.widthInChars = g_console_field_width;
+
+-	Con_ClearNotify();
++	if (!con_notifykeep->integer) {
++		Con_ClearNotify();
++	}
++
+ 	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_CONSOLE );
+
+@@ -393,6 +401,10 @@ void Con_Init( void )
+ 	con_notifytime = Cvar_Get( "con_notifytime", "3", 0 );
+ 	Cvar_SetDescription( con_notifytime, "Defines how long messages (from players or the system) are on the screen (in seconds)." );
++	con_notifylines = Cvar_Get( "con_notifyLines", "3", CVAR_ARCHIVE );
++	Cvar_CheckRange( con_notifylines, "0", XSTRING( NUM_CON_TIMES ), CV_INTEGER );
++	con_notifyx = Cvar_Get( "con_notifyX", "0", CVAR_ARCHIVE );
++	con_notifyy = Cvar_Get( "con_notifyY", "0", CVAR_ARCHIVE );
++	con_notifykeep = Cvar_Get( "con_notifyKeep", "0", CVAR_ARCHIVE );
+
+@@ -404,6 +416,7 @@ void Con_Init( void )
+
+ 	Cmd_AddCommand( "clear", Con_Clear_f );
++	Cmd_AddCommand( "clearnotify", Con_ClearNotify );
+ 	Cmd_AddCommand( "condump", Con_Dump_f );
+
+@@ -425,6 +438,7 @@ void Con_Shutdown( void )
+ {
+ 	Cmd_RemoveCommand( "clear" );
++	Cmd_RemoveCommand( "clearnotify" );
+ 	Cmd_RemoveCommand( "condump" );
+
+@@ -665,12 +679,16 @@ static void Con_DrawNotify( void )
+ 	int		skip;
+ 	int		currentColorIndex;
+ 	int		colorIndex;
++
++	float notifyx = con_notifyx->value;
++	float notifyy = con_notifyy->value;
++	SCR_AdjustFrom640(&notifyx, &notifyy, NULL, NULL);
+
+ 	currentColorIndex = ColorIndex( COLOR_WHITE );
+ 	re.SetColor( g_color_table[ currentColorIndex ] );
+
+ 	v = 0;
+-	for (i= con.current-NUM_CON_TIMES+1 ; i<=con.current ; i++)
++	for (i = con.current - con_notifylines->integer + 1; i <= con.current; i++)
+ 	{
+ 		if (i < 0)
+ 			continue;
+@@ -678,7 +696,7 @@ static void Con_DrawNotify( void )
+ 		if (time == 0)
+ 			continue;
+ 		time = cls.realtime - time;
+-		if ( time >= con_notifytime->value*1000 )
++		if (con_notifytime->value != -1 && time >= con_notifytime->value*1000 )
+ 			continue;
+
+@@ -695,7 +713,7 @@ static void Con_DrawNotify( void )
+ 				currentColorIndex = colorIndex;
+ 				re.SetColor( g_color_table[ colorIndex ] );
+ 			}
+-			SCR_DrawSmallChar( cl_conXOffset->integer + con.xadjust + (x+1)*smallchar_width, v, text[x] & 0xff );
++			SCR_DrawSmallChar( (int)notifyx + con.xadjust + (x+1)*smallchar_width, v + (int)notifyy, text[x] & 0xff );
+ 		}
+
+@@ -710,17 +728,18 @@ static void Con_DrawNotify( void )
+ 	// draw the chat line
+ 	if ( Key_GetCatcher( ) & KEYCATCH_MESSAGE )
+ 	{
++		v += (int)notifyy;
+ 		// rescale to virtual 640x480 space
+ 		v /= cls.glconfig.vidHeight / 480.0;
+
+ 		if (chat_team)
+ 		{
+-			SCR_DrawBigString( SMALLCHAR_WIDTH, v, "say_team:", 1.0f, qfalse );
++			SCR_DrawBigString( smallchar_width, v, "say_team:", 1.0f, qfalse );
+ 			skip = 10;
+ 		}
+ 		else
+ 		{
+-			SCR_DrawBigString( SMALLCHAR_WIDTH, v, "say:", 1.0f, qfalse );
++			SCR_DrawBigString( smallchar_width, v, "say:", 1.0f, qfalse );
+ 			skip = 5;
+ 		}
+
+--

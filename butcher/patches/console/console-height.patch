@@ -1,0 +1,79 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Configurable console height with modifier keys
+
+Add cvars to control console height:
+- con_height (default 0.5): normal console toggle height
+- con_heightShift (default 0.5): height when Shift is held
+- con_heightCtrl (default 0.25): height when Ctrl is held (quarter screen)
+- con_heightAlt (default 1.0): height when Alt is held (full screen)
+All values clamped to [0.1, 1.0].
+
+Files: code/client/cl_console.c
+---
+diff --git a/code/client/cl_console.c b/code/client/cl_console.c
+index 65f6242b..00000002 100644
+--- a/code/client/cl_console.c
++++ b/code/client/cl_console.c
+@@ -50,6 +50,7 @@ typedef struct {
+
+ 	float	displayFrac;	// aproaches finalFrac at scr_conspeed
+ 	float	finalFrac;		// 0.0 to 1.0 lines of console to display
++	float	userFrac;		// based on con_height* cvars, different with modifier keys
+
+ 	int		vislines;		// in scanlines
+
+@@ -69,7 +70,11 @@ console_t	con;
+ cvar_t		*con_conspeed;
+ cvar_t		*con_autoclear;
+ cvar_t		*con_notifytime;
+ cvar_t		*con_scale;
++cvar_t		*con_height;
++cvar_t		*con_heightShift;
++cvar_t		*con_heightCtrl;
++cvar_t		*con_heightAlt;
+
+ int			g_console_field_width;
+
+@@ -91,6 +96,18 @@ void Con_ToggleConsole_f( void ) {
+
+ 	g_consoleField.widthInChars = g_console_field_width;
+
++	if ( keys[K_SHIFT].down )	{
++		con.userFrac = con_heightShift->value;
++	}
++	else if ( keys[K_CTRL].down )	{
++		con.userFrac = con_heightCtrl->value;
++	}
++	else if ( keys[K_ALT].down )	{
++		con.userFrac = con_heightAlt->value;
++	}
++	else {
++		con.userFrac = con_height->value;
++	}
++
+ 	Con_ClearNotify();
+ 	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_CONSOLE );
+ }
+@@ -393,6 +410,14 @@ void Con_Init( void )
+ 	con_conspeed = Cvar_Get( "scr_conspeed", "3", 0 );
+ 	Cvar_SetDescription( con_conspeed, "Console opening/closing scroll speed." );
++	con_height = Cvar_Get( "con_height", "0.5", CVAR_ARCHIVE_ND );
++	con_heightShift = Cvar_Get( "con_heightShift", "0.5", CVAR_ARCHIVE_ND );
++	con_heightCtrl = Cvar_Get( "con_heightCtrl", "0.25", CVAR_ARCHIVE_ND );
++	con_heightAlt = Cvar_Get( "con_heightAlt", "1.0", CVAR_ARCHIVE_ND );
++	Cvar_CheckRange( con_height, "0.1", "1.0", CV_FLOAT );
++	Cvar_CheckRange( con_heightShift, "0.1", "1.0", CV_FLOAT );
++	Cvar_CheckRange( con_heightCtrl, "0.1", "1.0", CV_FLOAT );
++	Cvar_CheckRange( con_heightAlt, "0.1", "1.0", CV_FLOAT );
+ 	con_autoclear = Cvar_Get("con_autoclear", "1", CVAR_ARCHIVE_ND);
+
+@@ -918,14 +943,14 @@ void Con_RunConsole( void )
+ {
+ 	// decide on the destination height of the console
+ 	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE )
+-		con.finalFrac = 0.5;	// half screen
++		con.finalFrac = con.userFrac;	// based on con_height* cvars, different with modifier keys
+ 	else
+ 		con.finalFrac = 0.0;	// none visible
+
+--

@@ -1,0 +1,35 @@
+diff --git a/code/client/cl_console.c b/code/client/cl_console.c
+index 65f6242b..9f1f01d1 100644
+--- a/code/client/cl_console.c
++++ b/code/client/cl_console.c
+@@ -801,7 +801,7 @@ static void Con_DrawSolidConsole( float frac ) {
+ 
+ 	}
+ 
+-	re.SetColor( g_color_table[ ColorIndex( COLOR_RED ) ] );
++	re.SetColor( g_color_table[ 8 ] );
+ 	re.DrawStretchPic( 0, yf, wf, 2, 0, 0, 1, 1, cls.whiteShader );
+ 
+ 	//y = yf;
+@@ -822,7 +822,7 @@ static void Con_DrawSolidConsole( float frac ) {
+ 	if ( con.display != con.current )
+ 	{
+ 		// draw arrows to show the buffer is backscrolled
+-		re.SetColor( g_color_table[ ColorIndex( COLOR_RED ) ] );
++		re.SetColor( g_color_table[ 8 ] );
+ 		for ( x = 0 ; x < con.linewidth ; x += 4 )
+ 			SCR_DrawSmallChar( con.xadjust + (x+1)*smallchar_width, y, '^' );
+ 		y -= smallchar_height;
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 32ced35e..c7ccb475 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -3931,7 +3931,7 @@ void CL_Init( void ) {
+ 
+ 	cl_conXOffset = Cvar_Get ("cl_conXOffset", "0", 0);
+ 	Cvar_SetDescription( cl_conXOffset, "Console notifications X-offset." );
+-	cl_conColor = Cvar_Get( "cl_conColor", "", 0 );
++	cl_conColor = Cvar_Get( "cl_conColor", "30 30 30 220", 0 );
+ 	Cvar_SetDescription( cl_conColor, "Console background color, set as R G B A values from 0-255, use with \\seta to save in config." );
+ 
+ #ifdef MACOS_X

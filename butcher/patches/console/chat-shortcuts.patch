@@ -1,0 +1,45 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Console chat shortcuts (Ctrl+Enter, Ctrl+Shift+Enter)
+
+- Ctrl+Enter sends as say_team
+- Ctrl+Shift+Enter sends as tell to tracked player (df_mp_TrackPlayerNum)
+- Move Com_Printf of input echo after command detection (show ]\command for
+  slash commands, show ] for empty input)
+
+Files: code/client/cl_keys.c
+---
+diff --git a/code/client/cl_keys.c b/code/client/cl_keys.c
+index 49a98dd5..00000006 100644
+--- a/code/client/cl_keys.c
++++ b/code/client/cl_keys.c
+@@ -403,16 +403,26 @@ static void Console_Key( int key ) {
+ 			g_consoleField.cursor++;
+ 		}
+
+-		Com_Printf( "]%s\n", g_consoleField.buffer );
+-
+ 		// leading slash is an explicit command
+ 		if ( g_consoleField.buffer[0] == '\\' || g_consoleField.buffer[0] == '/' ) {
++			Com_Printf( "]\\%s\n", g_consoleField.buffer+1 );
+ 			Cbuf_AddText( g_consoleField.buffer+1 );	// valid command
+ 			Cbuf_AddText( "\n" );
+ 		} else {
+ 			// other text will be chat messages
+ 			if ( !g_consoleField.buffer[0] ) {
++				Com_Printf( "]\n" );
+ 				return;	// empty lines just scroll the console without adding to history
++			} else if ( keys[K_CTRL].down && keys[K_SHIFT].down ) {
++				Cbuf_AddText( "cmd tell " );
++				Cbuf_AddText( Cvar_VariableString("df_mp_TrackPlayerNum") );
++				Cbuf_AddText( " " );
++				Cbuf_AddText( g_consoleField.buffer );
++				Cbuf_AddText( "\n" );
++			} else if ( keys[K_CTRL].down ) {
++				Cbuf_AddText( "cmd say_team " );
++				Cbuf_AddText( g_consoleField.buffer );
++				Cbuf_AddText( "\n" );
+ 			} else {
+ 				Cbuf_AddText( "cmd say " );
+ 				Cbuf_AddText( g_consoleField.buffer );
+
+--

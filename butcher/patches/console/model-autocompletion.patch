@@ -1,0 +1,153 @@
+From: sOkam <7308253+heysokam@users.noreply.github.com>
+Subject: [PATCH] Tab-completion for model command and cv callvote alias
+
+- Tab-complete for the `model` command, searches models/players/*/icon_*
+  and extracts model/skin format
+- Add `cv` as alias for `callvote` with same completion
+
+Files: code/client/cl_main.c, code/qcommon/common.c, code/qcommon/qcommon.h
+---
+diff --git a/code/client/cl_main.c b/code/client/cl_main.c
+index 9e23d282..00000009 100644
+--- a/code/client/cl_main.c
++++ b/code/client/cl_main.c
+@@ -2046,6 +2046,9 @@ static void CL_DownloadsComplete( void ) {
+ 	if ( clc.demofile == FS_INVALID_HANDLE ) {
+ 		Cmd_AddCommand( "callvote", NULL );
+ 		Cmd_SetCommandCompletionFunc( "callvote", CL_CompleteCallvote );
++
++		Cmd_AddCommand( "cv", NULL );
++		Cmd_SetCommandCompletionFunc( "cv", CL_CompleteCallvote );
+ 	}
+
+@@ -3844,6 +3847,26 @@ static void CL_InitGLimp_Cvars( void )
+ #endif
+ }
+
++static qboolean CL_ModelNameCallback_f( const char *filename, int length )
++{
++	// <model_name>/icon_<skin_name>.<extension>
++	if ( length < 1 /*model name*/ + 6 + 1 /*skin name*/ )
++		return qfalse;
++
++	const char *slash = strrchr( filename, '/' );
++	return slash && !Q_stricmpn( slash + 1, "icon_", 5 );
++}
++
++static void CL_CompleteModelName( const char *args, int argNum )
++{
++	if( argNum == 2 )
++	{
++		FS_SetFilenameCallback( CL_ModelNameCallback_f );
++		Field_CompleteModelName();
++		FS_SetFilenameCallback( NULL );
++	}
++}
++
+
+@@ -4026,6 +4049,7 @@ void CL_Init( void ) {
+ 	Cmd_AddCommand ("fs_referencedList", CL_ReferencedPK3List_f );
+ 	Cmd_AddCommand ("model", CL_SetModel_f );
++	Cmd_SetCommandCompletionFunc( "model", CL_CompleteModelName );
+ 	Cmd_AddCommand ("video", CL_Video_f );
+
+diff --git a/code/qcommon/common.c b/code/qcommon/common.c
+index cceae657..00000009 100644
+--- a/code/qcommon/common.c
++++ b/code/qcommon/common.c
+@@ -4530,6 +4530,42 @@ static void FindMatches( const char *s ) {
+ }
+
+
++static void ExtractModelSkin( const char *s, char *modelSkin, int size) {
++	assert( s && modelSkin );
++	if ( strlen( s ) - 5 < size ) {
++		// model name
++		char *slash = strrchr( s, '/' );
++		assert(slash);
++		while ( s < slash ) {
++			*modelSkin++ = *s++;
++		}
++		assert( !Q_stricmpn( s, "/icon_", 6 ) );
++		s += 6;
++		if ( Q_stricmpn( s, "default", 7 ) )
++		{
++			// skin name
++			*modelSkin++ = '/';
++			while ( *s ) {
++				*modelSkin++ = *s++;
++			}
++		}
++	}
++	*modelSkin = '\0';
++}
++
++
++/*
++===============
++FindModelMatches
++===============
++*/
++static void FindModelMatches( const char *s ) {
++	char modelSkin[ MAX_QPATH ];
++	ExtractModelSkin( s, modelSkin, sizeof( modelSkin ) );
++	FindMatches( modelSkin );
++}
++
+
+ /*
+ ===============
+@@ -4557,6 +4593,18 @@ static void PrintCvarMatches( const char *s ) {
+ }
+
+
++/*
++===============
++PrintModelMatches
++===============
++*/
++static void PrintModelMatches( const char *s ) {
++	char modelSkin[ MAX_QPATH ];
++	ExtractModelSkin( s, modelSkin, sizeof( modelSkin ) );
++	PrintMatches( modelSkin );
++}
++
+
+@@ -4746,6 +4794,28 @@ void Field_CompleteFilename( const char *dir, const char *ext, qboolean stripExt
+ }
+
+
++/*
++===============
++Field_CompleteModelName
++===============
++*/
++void Field_CompleteModelName( void )
++{
++	matchCount = 0;
++	shortestMatch[ 0 ] = '\0';
++
++	char const* dir = "models/players";
++	char const* ext = "";
++	qboolean const stripExt = qtrue;
++	int const flags = FS_MATCH_ANY | FS_MATCH_STICK;
++
++	FS_FilenameCompletion( dir, ext, stripExt, FindModelMatches, flags );
++
++	if ( !Field_Complete() )
++		FS_FilenameCompletion( dir, ext, stripExt, PrintModelMatches, flags );
++}
++
+
+diff --git a/code/qcommon/qcommon.h b/code/qcommon/qcommon.h
+index 3105af8d..00000009 100644
+--- a/code/qcommon/qcommon.h
++++ b/code/qcommon/qcommon.h
+@@ -908,6 +908,7 @@ void Field_AutoComplete( field_t *edit );
+ void Field_CompleteKeyname( void );
+ void Field_CompleteKeyBind( int key );
+ void Field_CompleteFilename( const char *dir, const char *ext, qboolean stripExt, int flags );
++void Field_CompleteModelName( void );
+ void Field_CompleteCommand( const char *cmd, qboolean doCommands, qboolean doCvars );
+
+--
