@@ -1,0 +1,39 @@
+diff --git a/code/client/cl_input.c b/code/client/cl_input.c
+index 37644e5c..b7d55355 100644
+--- a/code/client/cl_input.c
++++ b/code/client/cl_input.c
+@@ -351,8 +351,14 @@ static void CL_KeyMove( usercmd_t *cmd ) {
+ 	side -= movespeed * CL_KeyState (&in_moveleft);
+ 
+ 
+-	up += movespeed * CL_KeyState (&in_up);
+-	up -= movespeed * CL_KeyState (&in_down);
++	//::oQ3 added. Separate jump/crouch button detection
++	float upState   = CL_KeyState (&in_up);
++	float downState = CL_KeyState (&in_down);
++	up += movespeed * upState;
++	up -= movespeed * downState;
++	if (upState)   { cmd->buttons |= BUTTON_JUMP; }
++	if (downState) { cmd->buttons |= BUTTON_CROUCH; }
++	//::oQ3 end
+ 
+ 	forward += movespeed * CL_KeyState (&in_forward);
+ 	forward -= movespeed * CL_KeyState (&in_back);
+diff --git a/code/qcommon/q_shared.h b/code/qcommon/q_shared.h
+index ca92dd0d..8b8ae464 100644
+--- a/code/qcommon/q_shared.h
++++ b/code/qcommon/q_shared.h
+@@ -1269,7 +1269,12 @@ typedef struct playerState_s {
+ #define BUTTON_PATROL		512
+ #define BUTTON_FOLLOWME		1024
+ 
+-#define	BUTTON_ANY			2048			// any key whatsoever
++//::oQ3 added
++#define BUTTON_JUMP			2048			// jump key is pressed, separate from combined upmove
++#define BUTTON_CROUCH		4096			// crouch key is pressed, separate from combined upmove
++//::oQ3 end
++
++#define	BUTTON_ANY			8192			// any key whatsoever
+ 
+ #define	MOVE_RUN			120			// if forwardmove or rightmove are >= MOVE_RUN,
+ 										// then BUTTON_WALKING should be set
