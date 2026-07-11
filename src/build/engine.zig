@@ -128,7 +128,7 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
   //__________________
   // 2. Reset submodule to clean state and apply patches
   const dir        = try confy.dir.absolute(Engine.config.idtech3.dir, P.io, P.arena.allocator(), .{});
-  try confy.git.checkout.run(".", P.io, P.arena.allocator(), .{.cwd= dir});
+  try confy.git.checkout.run(".", P.io, P.arena.allocator(), .{.cwd= dir, .user= &.{"HEAD"}});
   try confy.git.clean.run(P.io, P.arena.allocator(), .{.cwd= dir, .user= &.{"-e", "bin"}});
   var   patches    = try confy.Patch.List.create(Engine.config.idtech3.patch_list, .{.mode= .absolute, .cfg= .{.verbose= true}});
   const wiggle_src = try confy.dir.absolute("./bin/.wiggle", P.io, P.arena.allocator(), .{});
