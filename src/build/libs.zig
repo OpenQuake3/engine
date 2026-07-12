@@ -28,9 +28,16 @@ const target = struct {
 //______________________________________
 // @section Libs: Create
 //____________________________
-pub fn create (P :confy.Process, system :confy.System) !Libs {
-  var build_cfg :confy.Config = .default();
+pub fn create (
+    P      : confy.Process,
+    cfg    : confy.Config,
+    system : confy.System,
+    root   : confy.Path,
+  ) !Libs {
+  var build_cfg = cfg;
   build_cfg.system.subfolder = true;
+  build_cfg.system.appendCpu = false;
+  build_cfg.dir.bin = try confy.path.join(P.arena.allocator(), &.{root, "bin"});
   return .{
     .zlib    = try Libs.target.zlib(P, system, build_cfg),
     .mbedtls = try Libs.target.mbedtls(P, system, build_cfg),

@@ -159,11 +159,11 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
 //______________________________________
 // @section Engine Dependencies
 //____________________________
-fn libs (E :*Engine, systems :[]const confy.System) !void { for (systems) |system| {
+fn libs (E :*Engine, systems :[]const confy.System, root :confy.Path) !void { for (systems) |system| {
   //__________________
   // Build static libraries for windows
   if (system.os == .windows) {
-    var L = try Libs.create(E.setup.P, system);
+    var L = try Libs.create(E.setup.P, E.client.cfg, system, root);
     try L.build();
   }
 }}
@@ -173,35 +173,39 @@ fn libs (E :*Engine, systems :[]const confy.System) !void { for (systems) |syste
 // @section Engine Builder: Entry Point
 //____________________________
 pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
-  const prev = try E.setup.currentPath(E.root);
-  const A    = E.setup.A.allocator();
-  const io   = E.setup.io.io();
+  const prev        = try E.setup.currentPath(E.root);
+  const A           = E.setup.A.allocator();
+  const io          = E.setup.io.io();
+  const engine_root = try confy.dir.absolute(".", io, A, .{});
   //__________________
   // Make sure the requirements and libraries are available
   try Engine.requirements(E.setup.P, E.pkg);
-  try Engine.libs(E, systems);
+  try Engine.libs(E, systems, engine_root);
   //__________________
   for (systems) |system| {
-    const out_dir = try confy.path.join(A, &.{prev, "bin", try system.zig_triple(A)});
+    const triple     = try system.zig_triple(A);
+    const out_dir    = try confy.path.join(A, &.{prev, "bin", triple});
+    const engine_out = try confy.path.join(A, &.{engine_root, "bin", triple});
     try confy.dir.create(out_dir, io, .{});
     if (system.eq(confy.System.host())) {
+      try E.client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       try E.client.build();
       try E.server.build();
       //__________________
       // Copy engine binaries into output
       try confy.dir.copy_contents(try E.client.out_dir(), out_dir, io, A, .{.kind= .files});
-      // Cleanup Windows build noise
-      if (system.os == .windows) try confy.dir.remove_extensions(
-        out_dir, &.{".pdb", ".lib"}, io, A, .{});
     } else {
       //__________________
-      var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{ .release = E.release, .game = E.game });
+      // Build client engine for this system
+      E.client.cfg.dir.sub = confy.Config.defaults.dir.sub;
+      var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{.release= E.release, .game= E.game });
+      try client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       if (E.game) |game| try client.flags.add_one(
         (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
-      if (system.os == .windows) try client.flags.add_one(
-        (try confy.string.create_format("-L./bin/{s}", .{try system.zig_triple(A)}, A)).data());
       try client.build();
       //__________________
+      // Build dedicated server engine for this system
+      E.server.cfg.dir.sub = confy.Config.defaults.dir.sub;
       var server = try Engine.target.server(E.setup.P, system, E.server.cfg, .{ .release = E.release, .game = E.game });
       if (E.game) |game| try server.flags.add_one(
         (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
@@ -209,10 +213,9 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       //__________________
       // Copy engine binaries into output
       try confy.dir.copy_contents(try client.out_dir(), out_dir, io, A, .{.kind= .files});
-      // Cleanup Windows build noise
-      if (system.os == .windows) try confy.dir.remove_extensions(
-        out_dir, &.{".pdb", ".lib"}, io, A, .{});
     }
+    // Cleanup Windows build noise
+    try confy.dir.remove_extensions(out_dir, &.{".pdb", ".lib", ".obj"}, io, A, .{});
   }
   _ = try E.setup.currentPath(prev);
 }
