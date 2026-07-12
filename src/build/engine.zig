@@ -26,6 +26,7 @@ game    :?confy.Name = null,
 const config = @import("./cfg.zig");
 const flags  = @import("./flags.zig");
 const code   = @import("./source.zig");
+const Libs   = @import("./libs.zig").Libs;
 
 
 //______________________________________
@@ -156,6 +157,19 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
 
 
 //______________________________________
+// @section Engine Dependencies
+//____________________________
+fn libs (E :*Engine, systems :[]const confy.System) !void { for (systems) |system| {
+  //__________________
+  // Build static libraries for windows
+  if (system.os == .windows) {
+    var L = try Libs.create(E.setup.P, system);
+    try L.build();
+  }
+}}
+
+
+//______________________________________
 // @section Engine Builder: Entry Point
 //____________________________
 pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
@@ -163,8 +177,9 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
   const A    = E.setup.A.allocator();
   const io   = E.setup.io.io();
   //__________________
-  // Make sure the requirements are accessible
+  // Make sure the requirements and libraries are available
   try Engine.requirements(E.setup.P, E.pkg);
+  try Engine.libs(E, systems);
   //__________________
   for (systems) |system| {
     const out_dir = try confy.path.join(A, &.{prev, "bin", try system.zig_triple(A)});
@@ -183,6 +198,8 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       var client = try Engine.target.client(E.setup.P, system, E.client.cfg, .{ .release = E.release, .game = E.game });
       if (E.game) |game| try client.flags.add_one(
         (try confy.string.create_format("-DDEFAULT_GAME=\"{s}\"", .{game.short}, A)).data());
+      if (system.os == .windows) try client.flags.add_one(
+        (try confy.string.create_format("-L./bin/{s}", .{try system.zig_triple(A)}, A)).data());
       try client.build();
       //__________________
       var server = try Engine.target.server(E.setup.P, system, E.server.cfg, .{ .release = E.release, .game = E.game });

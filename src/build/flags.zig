@@ -159,10 +159,13 @@ pub const client = struct {
     "-L" ++ cfg.dir.src ++ "/libsdl/windows/mingw/lib64",
     "-lSDL264",
     "-DCURL_STATICLIB",
-    "-L" ++ cfg.dir.src ++ "/libcurl/windows/mingw/lib64",
     "-lcurl",
+    "-lmbedtls",
     "-lz",
+    "-lsecur32",
     "-lcrypt32",
+    "-lbcrypt",
+    "-liphlpapi",
   };
   //__________________
   const os = struct {
