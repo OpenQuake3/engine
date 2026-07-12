@@ -35,6 +35,7 @@ const platform = struct {
   };
   //__________________
   const unix = &[_]confy.cstring{
+    "-DUSE_CURL_DLOPEN",
     "-pipe",
   };
   //__________________
@@ -129,7 +130,6 @@ pub const client = struct {
     // "-Wno-unused-result",
     // Defines
     "-DUSE_CURL",
-    "-DUSE_CURL_DLOPEN",
     "-DUSE_OPENGL_API",
     "-DUSE_OGG_VORBIS",
     // Includes
@@ -158,6 +158,11 @@ pub const client = struct {
   const win32 = &[_]confy.cstring{
     "-L" ++ cfg.dir.src ++ "/libsdl/windows/mingw/lib64",
     "-lSDL264",
+    "-DCURL_STATICLIB",
+    "-L" ++ cfg.dir.src ++ "/libcurl/windows/mingw/lib64",
+    "-lcurl",
+    "-lz",
+    "-lcrypt32",
   };
   //__________________
   const os = struct {
