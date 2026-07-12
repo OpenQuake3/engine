@@ -4,3 +4,12 @@
 [submodule "src/lib/idtech3"]
 	path = src/lib/idtech3
 	url = https://github.com/ec-/Quake3e.git
+[submodule "src/lib/zlib"]
+	path = src/lib/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "src/lib/mbedtls"]
+	path = src/lib/mbedtls
+	url = https://github.com/Mbed-TLS/mbedtls.git
+[submodule "src/lib/curl"]
+	path = src/lib/curl
+	url = https://github.com/curl/curl.git
