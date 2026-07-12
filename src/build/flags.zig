@@ -133,11 +133,11 @@ pub const client = struct {
     "-DUSE_OPENGL_API",
     "-DUSE_OGG_VORBIS",
     // Includes
-    "-I./bin/.lib/idtech3/code/libsdl/include/SDL2",
-    "-I./bin/.lib/idtech3/code/libcurl/windows/include",
-    "-I./bin/.lib/idtech3/code/libogg/include",
-    "-I./bin/.lib/idtech3/code/libvorbis/include",
-    "-I./bin/.lib/idtech3/code/libvorbis/lib",
+    "-I" ++ cfg.dir.src ++ "/libsdl/include/SDL2",
+    "-I" ++ cfg.dir.src ++ "/libcurl/windows/include",
+    "-I" ++ cfg.dir.src ++ "/libogg/include",
+    "-I" ++ cfg.dir.src ++ "/libvorbis/include",
+    "-I" ++ cfg.dir.src ++ "/libvorbis/lib",
     // Assembly
     "-DELF",
     // Exceptions
@@ -152,11 +152,11 @@ pub const client = struct {
   };
   //__________________
   const macos = &[_]confy.cstring{
-    "./bin/.lib/idtech3/code/libsdl/macosx/libSDL2-2.0.0.dylib",
+    cfg.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
   };
   //__________________
   const win32 = &[_]confy.cstring{
-    "-L./bin/.lib/idtech3/code/libsdl/windows/mingw/lib64",
+    "-L" ++ cfg.dir.src ++ "/libsdl/windows/mingw/lib64",
     "-lSDL264",
   };
   //__________________
