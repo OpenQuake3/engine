@@ -16,8 +16,8 @@ server  :confy.Target,
 setup   :confy.Confy,
 pkg     :confy.package.Info,
 root    :confy.Path= ".",
-release :bool      = true,
-game    :?confy.Name = null,
+release :bool= true,
+game    :?confy.Name= null,
 
 
 //______________________________________
@@ -46,6 +46,7 @@ const target = struct {
       .src          = Engine.code.client.files(system),
       .globs        = Engine.code.client.dirs(system),
       .src_absolute = true,
+      .deps         = &.{ Libs.freetype.dependency },
       .flags        = Engine.flags.client.all(system, arg.release),
       .cfg          = cfg,
       .system       = system,
@@ -187,6 +188,14 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
     const out_dir    = try confy.path.join(A, &.{prev, "bin", triple});
     const engine_out = try confy.path.join(A, &.{engine_root, "bin", triple});
     try confy.dir.create(out_dir, io, .{});
+    try confy.dir.create(engine_out, io, .{});
+    try Libs.freetype.dependency.download(.{.cfg= E.client.cfg, .io= io, .A= A});
+    if (system.os == .windows) {
+      const freetype_root = try Libs.freetype.dependency.path(E.client.cfg, .{.A= A});
+      try confy.file.copy(
+        try confy.path.join(A, &.{freetype_root.data(), "release dll/x64/freetype.dll"}),
+        try confy.path.join(A, &.{engine_out, "freetype.dll"}), io, .{});
+    }
     if (system.eq(confy.System.host())) {
       try E.client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       try E.client.build();

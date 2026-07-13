@@ -1,6 +1,6 @@
 .{
     .name = .oQ3,
-    .version = "1.41.2",
+    .version = "1.42.0",
     .license = "GPL-3.0-or-later",
     .minimum_zig_version = "0.16.0",
     .paths = .{""},

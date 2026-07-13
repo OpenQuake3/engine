@@ -1,0 +1,12 @@
+diff --git a/code/renderercommon/tr_font.c b/code/renderercommon/tr_font.c
+index 2f95de39..18d4afd1 100644
+--- a/code/renderercommon/tr_font.c
++++ b/code/renderercommon/tr_font.c
+@@ -71,6 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #include "../qcommon/q_shared.h"
+ #include "../qcommon/qcommon.h"
+ #include "../renderercommon/tr_public.h"
++#include "../renderer/tr_common.h"
+ 
+ extern void R_IssuePendingRenderCommands( void );
+ extern qhandle_t RE_RegisterShaderNoMip( const char *name );

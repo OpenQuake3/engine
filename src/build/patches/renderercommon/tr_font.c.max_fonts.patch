@@ -1,0 +1,13 @@
+diff --git a/code/renderercommon/tr_font.c b/code/renderercommon/tr_font.c
+index 2f95de39..eb0661a4 100644
+--- a/code/renderercommon/tr_font.c
++++ b/code/renderercommon/tr_font.c
+@@ -90,7 +90,7 @@ extern qhandle_t RE_RegisterShaderNoMip( const char *name );
+ FT_Library ftLibrary = NULL;  
+ #endif
+ 
+-#define MAX_FONTS 6
++#define MAX_FONTS 16
+ static int registeredFontCount = 0;
+ static fontInfo_t registeredFont[MAX_FONTS];
+ 

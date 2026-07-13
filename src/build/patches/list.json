@@ -15,6 +15,9 @@
   { "path": "renderercommon/tr_image_tga.c.topdown.developer.patch", "description": "Make top-down warning message a developer warning instead." },
   { "path": "renderer/tr_shader.c.imageless.stage.patch",            "description": "Make imageless shaders warning messages into a developer warning instead." },
 
+  { "path": "renderercommon/tr_font.c.freetype.includes.patch",      "description": "Include renderer tr_common.h for FreeType support types" },
+  { "path": "renderercommon/tr_font.c.max_fonts.patch",              "description": "Increase MAX_FONTS from 6 to 16" },
+
   { "path": "unix/unix_main.c.state.tty.patch",                      "description": "Change tty state visibility to public" },
   { "path": "qcommon/common.c.state.jmp.patch",                      "description": "Change abortframe visibility to public" },
   { "path": "qcommon/common.c.state.affinityMasks.patch",            "description": "Change affinity mask state visibility to public" },

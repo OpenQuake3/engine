@@ -140,6 +140,7 @@ pub const client = struct {
     "-I" ++ cfg.dir.src ++ "/libvorbis/lib",
     // Libraries
     "-lSDL2",
+    "-lfreetype",
     // Assembly
     "-DELF",
     // Exceptions
@@ -150,6 +151,9 @@ pub const client = struct {
   const linux = &[_]confy.cstring{
     "-I/usr/local/include",
     "-rdynamic",
+    "-DBUILD_FREETYPE",
+    "-I/usr/include/freetype2",
+    "-I/usr/include/libpng16",
   };
   //__________________
   const macos = &[_]confy.cstring{
