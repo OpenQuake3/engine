@@ -196,6 +196,11 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
         try confy.path.join(A, &.{freetype_root.data(), "release dll/x64/freetype.dll"}),
         try confy.path.join(A, &.{engine_out, "freetype.dll"}), io, .{});
     }
+    if (system.os == .macos) {
+      try confy.file.copy(
+        config.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
+        try confy.path.join(A, &.{engine_out, "libSDL2.dylib"}), io, .{});
+    }
     if (system.eq(confy.System.host())) {
       try E.client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       try E.client.build();

@@ -157,7 +157,6 @@ pub const client = struct {
   };
   //__________________
   const macos = &[_]confy.cstring{
-    cfg.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
   };
   //__________________
   const win32 = &[_]confy.cstring{
