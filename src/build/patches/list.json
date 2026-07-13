@@ -1,5 +1,7 @@
 [
+  { "path": "libsdl/SDL264.dll.rename.patch",                        "description": "Rename win64 SDL264.dll to SDL2.dll", "git": true },
   { "path": "client/snd_mix_x86_64.s.rename.patch",                  "description": "Rename .s to .S for clang preprocessor compatibility", "git": true, "cached": true },
+
   { "path": "qcommon/vm.c.zero_init_args.patch",                     "description": "Zero-initialize VM_Call args to fix UB crash on release optimization flags" },
 
   { "path": "unix/unix_main.c.lib.patch",                            "description": "Allow compilation as a static library" },

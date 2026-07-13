@@ -138,6 +138,8 @@ pub const client = struct {
     "-I" ++ cfg.dir.src ++ "/libogg/include",
     "-I" ++ cfg.dir.src ++ "/libvorbis/include",
     "-I" ++ cfg.dir.src ++ "/libvorbis/lib",
+    // Libraries
+    "-lSDL2",
     // Assembly
     "-DELF",
     // Exceptions
@@ -148,7 +150,6 @@ pub const client = struct {
   const linux = &[_]confy.cstring{
     "-I/usr/local/include",
     "-rdynamic",
-    "-lSDL2",
   };
   //__________________
   const macos = &[_]confy.cstring{
@@ -157,7 +158,7 @@ pub const client = struct {
   //__________________
   const win32 = &[_]confy.cstring{
     "-L" ++ cfg.dir.src ++ "/libsdl/windows/mingw/lib64",
-    "-lSDL264",
+    // libcurl
     "-DCURL_STATICLIB",
     "-lcurl",
     "-lmbedtls",

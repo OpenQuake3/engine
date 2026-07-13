@@ -1,0 +1,4 @@
+diff --git a/code/libsdl/windows/mingw/lib64/SDL264.dll b/code/libsdl/windows/mingw/lib64/SDL2.dll
+similarity index 100%
+rename from code/libsdl/windows/mingw/lib64/SDL264.dll
+rename to code/libsdl/windows/mingw/lib64/SDL2.dll
