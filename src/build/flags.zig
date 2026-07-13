@@ -132,6 +132,7 @@ pub const client = struct {
     "-DUSE_CURL",
     "-DUSE_OPENGL_API",
     "-DUSE_OGG_VORBIS",
+    "-DBUILD_FREETYPE",
     // Includes
     "-I" ++ cfg.dir.src ++ "/libsdl/include/SDL2",
     "-I" ++ cfg.dir.src ++ "/libcurl/windows/include",
@@ -151,7 +152,6 @@ pub const client = struct {
   const linux = &[_]confy.cstring{
     "-I/usr/local/include",
     "-rdynamic",
-    "-DBUILD_FREETYPE",
     "-I/usr/include/freetype2",
     "-I/usr/include/libpng16",
   };
