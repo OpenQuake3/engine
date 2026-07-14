@@ -159,7 +159,6 @@ pub const client = struct {
   };
   //__________________
   const win32 = &[_]confy.cstring{
-    "-L" ++ cfg.dir.src ++ "/libsdl/windows/mingw/lib64",
     // libcurl
     "-DCURL_STATICLIB",
     "-lcurl",

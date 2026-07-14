@@ -197,11 +197,6 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
     try confy.dir.create(out_dir, io, .{});
     try confy.dir.create(engine_out, io, .{});
     try Libs.freetype.dependency.download(.{.cfg= E.client.cfg, .io= io, .A= A});
-    if (system.os == .macos) {
-      try confy.file.copy(
-        config.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
-        try confy.path.join(A, &.{engine_out, "libSDL2.dylib"}), io, .{});
-    }
     if (system.eq(confy.System.host())) {
       try E.client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       try E.client.build();
