@@ -46,7 +46,7 @@ const target = struct {
       .src          = Engine.code.client.files(system),
       .globs        = Engine.code.client.dirs(system),
       .src_absolute = true,
-      .deps         = &.{ Libs.freetype.dependency },
+      .deps         = &.{ Libs.sdl2.dependency, Libs.freetype.dependency },
       .flags        = Engine.flags.client.all(system, arg.release),
       .cfg          = cfg,
       .system       = system,
@@ -174,6 +174,7 @@ fn libs (
   //__________________
   // Download prebuilt-binaries
   try Libs.freetype.download(E.setup.P, E.client.cfg, system, root);
+  try Libs.sdl2.download(E.setup.P, E.client.cfg, system, root);
 }}
 
 
@@ -197,19 +198,6 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
     try confy.dir.create(out_dir, io, .{});
     try confy.dir.create(engine_out, io, .{});
     try Libs.freetype.dependency.download(.{.cfg= E.client.cfg, .io= io, .A= A});
-    if (system.os == .windows) {  // TODO: REMOVE THIS use OpenQuake3/sdl-prebuilt instead
-      try confy.file.copy(
-        config.dir.src ++ "/libsdl/windows/mingw/lib64/libSDL264.dll.a",
-        try confy.path.join(A, &.{engine_out, "libSDL2.a"}), io, .{});
-      try confy.file.copy(
-        config.dir.src ++ "/libsdl/windows/mingw/lib64/SDL264.dll",
-        try confy.path.join(A, &.{engine_out, "SDL2.dll"}), io, .{});
-    }
-    if (system.os == .macos) {  // TODO: REMOVE THIS use OpenQuake3/sdl-prebuilt instead
-      try confy.file.copy(
-        config.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
-        try confy.path.join(A, &.{engine_out, "libSDL2.dylib"}), io, .{});
-    }
     if (system.eq(confy.System.host())) {
       try E.client.flags.add_one((try confy.string.create_format("-L{s}", .{engine_out}, A)).data());
       try E.client.build();

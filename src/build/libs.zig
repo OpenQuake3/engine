@@ -87,6 +87,71 @@ pub const freetype = struct {
   }
 };
 
+pub const sdl2 = struct {
+  //__________________
+  pub const dependency = confy.dependency("sdl2", "https://github.com/OpenQuake3/sdl-prebuilt", .{.src= "SDL/include"});
+  //__________________
+  pub const url = struct {
+    const base          = "https://github.com/OpenQuake3/sdl-prebuilt/releases/download/v2.32.2/sdl2-";
+    pub const static    = struct {
+      pub const windows = sdl2.url.base ++ "x86_64-windows-gnu.a";
+      pub const linux   = sdl2.url.base ++ "x86_64-linux-gnu.a";
+      pub const mac     = struct {
+        pub const x64   = sdl2.url.base ++ "x86_64-macos.a";
+        pub const arm64 = sdl2.url.base ++ "aarch64-macos.a";
+      };
+    };
+    pub const dynamic   = struct {
+      pub const windows = struct {
+        pub const dll   = sdl2.url.base ++ "x86_64-windows-gnu.dll";
+        pub const dll_a = sdl2.url.base ++ "x86_64-windows-gnu.dll.a";
+      };
+      pub const linux   = sdl2.url.base ++ "x86_64-linux-gnu.so";
+      pub const mac     = struct {
+        pub const x64   = sdl2.url.base ++ "x86_64-macos.dylib";
+        pub const arm64 = sdl2.url.base ++ "aarch64-macos.dylib";
+      };
+    };
+    pub const headers   = sdl2.url.base ++ "include.tar.gz";
+  };
+  //__________________
+  pub fn download (
+      P           : confy.Process,
+      cfg         : confy.Config,
+      system      : confy.System,
+      engine_root : confy.cstring,
+    ) !void {
+    const A   = P.arena.allocator();
+    const io  = P.io;
+    const dl  = confy.file.download_args{.redownload= false};
+    const trg = try confy.path.join(A, &.{engine_root, cfg.dir.bin, try system.zig_triple(A)});
+    try confy.dir.create(trg, io, .{});
+    switch (system.os) {
+      .linux => {
+        try confy.file.download(sdl2.url.static.linux,  try confy.path.join(A, &.{trg, "libSDL2.a"}), io, A, dl);
+        try confy.file.download(sdl2.url.dynamic.linux, try confy.path.join(A, &.{trg, "libSDL2.so"}), io, A, dl);
+      },
+      .windows => {
+        try confy.file.download(sdl2.url.static.windows,        try confy.path.join(A, &.{trg, "libSDL2_static.a"}), io, A, dl);
+        try confy.file.download(sdl2.url.dynamic.windows.dll,   try confy.path.join(A, &.{trg, "SDL2.dll"}), io, A, dl);
+        try confy.file.download(sdl2.url.dynamic.windows.dll_a, try confy.path.join(A, &.{trg, "libSDL2.a"}), io, A, dl);
+      },
+      .macos => switch (system.cpu) {
+        .x86_64 => {
+          try confy.file.download(sdl2.url.static.mac.x64,  try confy.path.join(A, &.{trg, "libSDL2.a"}), io, A, dl);
+          try confy.file.download(sdl2.url.dynamic.mac.x64, try confy.path.join(A, &.{trg, "libSDL2.dylib"}), io, A, dl);
+        },
+        .aarch64 => {
+          try confy.file.download(sdl2.url.static.mac.arm64,  try confy.path.join(A, &.{trg, "libSDL2.a"}), io, A, dl);
+          try confy.file.download(sdl2.url.dynamic.mac.arm64, try confy.path.join(A, &.{trg, "libSDL2.dylib"}), io, A, dl);
+        },
+        else => return error.UnsupportedMacCPU,
+      },
+      else => return error.UnsupportedOS,
+    }
+  }
+};
+
 
 //______________________________________
 // @section Libs: Create
