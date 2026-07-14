@@ -160,13 +160,20 @@ fn requirements (P :confy.Process, pkg :confy.package.Info) !void {_=pkg;
 //______________________________________
 // @section Engine Dependencies
 //____________________________
-fn libs (E :*Engine, systems :[]const confy.System, root :confy.Path) !void { for (systems) |system| {
+fn libs (
+    E       : *Engine,
+    systems : []const confy.System,
+    root    : confy.Path
+  ) !void { for (systems) |system| {
   //__________________
   // Build static libraries for windows
   if (system.os == .windows) {
     var L = try Libs.create(E.setup.P, E.client.cfg, system, root);
     try L.build();
   }
+  //__________________
+  // Download prebuilt-binaries
+  try Libs.freetype.download(E.setup.P, E.client.cfg, system, root);
 }}
 
 
@@ -190,12 +197,6 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
     try confy.dir.create(out_dir, io, .{});
     try confy.dir.create(engine_out, io, .{});
     try Libs.freetype.dependency.download(.{.cfg= E.client.cfg, .io= io, .A= A});
-    if (system.os == .windows) {
-      const freetype_root = try Libs.freetype.dependency.path(E.client.cfg, .{.A= A});
-      try confy.file.copy(
-        try confy.path.join(A, &.{freetype_root.data(), "release dll/x64/freetype.dll"}),
-        try confy.path.join(A, &.{engine_out, "freetype.dll"}), io, .{});
-    }
     if (system.os == .macos) {
       try confy.file.copy(
         config.dir.src ++ "/libsdl/macosx/libSDL2-2.0.0.dylib",
@@ -229,7 +230,7 @@ pub fn buildFor (E :*Engine, systems :[]const confy.System) !void {
       try confy.dir.copy_contents(try client.out_dir(), out_dir, io, A, .{.kind= .files});
     }
     // Cleanup Windows build noise
-    try confy.dir.remove_extensions(out_dir, &.{".pdb", ".lib", ".obj"}, io, A, .{});
+    try confy.dir.remove_extensions(out_dir, &.{".pdb", ".lib", ".obj", ".a", ".so"}, io, A, .{});
   }
   _ = try E.setup.currentPath(prev);
 }

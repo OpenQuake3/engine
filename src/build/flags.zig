@@ -145,15 +145,14 @@ pub const client = struct {
     // Assembly
     "-DELF",
     // Exceptions
-    "-fno-fast-math",       // NOTE: Only for vm_* files, but we add it for all
-    "-DBOTLIB",             // NOTE: Only for botlib/* files, but we add it for all
+    "-fno-fast-math",  // NOTE: Only for vm_* files, but we add it for all
+    "-DBOTLIB",        // NOTE: Only for botlib/* files, but we add it for all
   };
   //__________________
   const linux = &[_]confy.cstring{
-    "-I/usr/local/include",
     "-rdynamic",
-    "-I/usr/include/freetype2",
-    "-I/usr/include/libpng16",
+    "-I/usr/local/include",
+    "-I/usr/include/libpng16",  // freetype needs it. Freetype include folder itself is `-I` from its confy.dependency path
   };
   //__________________
   const macos = &[_]confy.cstring{
