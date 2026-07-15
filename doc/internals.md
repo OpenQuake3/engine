@@ -34,7 +34,7 @@ The entry file at [src/quake3.c](./src/quake3.c) provides an example of how to c
 ## Buildsystem
 ### libidtech3
 `libidtech3` is a static library created with a set of patches for the id-Tech3 engine.  
-The buildsystem of this project will:  
+The buildsystem of this projectwill:  
 - Clone a clean copy of id-Tech3 (currently: oDFe's repository)  
 - Apply the list of patches  
 - Build id-Tech3 as a Static Library  
